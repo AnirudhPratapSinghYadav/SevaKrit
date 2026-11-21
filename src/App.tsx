@@ -4,6 +4,7 @@ import Intake from "./pages/Intake";
 import Plan from "./pages/Plan";
 import Privacy from "./pages/Privacy";
 import Results from "./pages/Results";
+import Review from "./pages/Review";
 
 function Home() {
   return (
@@ -60,6 +61,14 @@ export default function App() {
             element={
               <main className="mx-auto max-w-2xl px-4 py-10">
                 <Privacy />
+              </main>
+            }
+          />
+          <Route
+            path="/review"
+            element={
+              <main className="mx-auto max-w-2xl px-4 py-10">
+                <Review />
               </main>
             }
           />

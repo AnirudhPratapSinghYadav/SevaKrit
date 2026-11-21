@@ -45,6 +45,8 @@ export default function Privacy() {
           site settings.
         </p>
       </section>
+
+      <p className="text-sm">Hindi labels for the core journey are not yet reviewed; English is shown.</p>
     </article>
   );
 }
