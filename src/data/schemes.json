@@ -1,0 +1,41 @@
+[
+  {
+    "id": "aahar-anudan",
+    "title": { "en": "Aahar Anudan" },
+    "department": "to be verified",
+    "beneficiaryScope": "household",
+    "applicationChannel": "to be verified from official source",
+    "steps": [],
+    "documents": [],
+    "deadline": null,
+    "sourceIds": ["aahar-anudan"],
+    "status": "draft",
+    "lastVerified": null
+  },
+  {
+    "id": "pvtg-dairy-support",
+    "title": { "en": "PVTG dairy support" },
+    "department": "to be verified",
+    "beneficiaryScope": "household",
+    "applicationChannel": "to be verified from official source",
+    "steps": [],
+    "documents": [],
+    "deadline": null,
+    "sourceIds": ["pvtg-dairy"],
+    "status": "draft",
+    "lastVerified": null
+  },
+  {
+    "id": "pm-janman-housing-mp",
+    "title": { "en": "PM JANMAN housing (Madhya Pradesh)" },
+    "department": "to be verified",
+    "beneficiaryScope": "household",
+    "applicationChannel": "to be verified from official source",
+    "steps": [],
+    "documents": [],
+    "deadline": null,
+    "sourceIds": ["pm-janman-housing-mp", "pm-janman-union"],
+    "status": "draft",
+    "lastVerified": null
+  }
+]

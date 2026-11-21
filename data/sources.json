@@ -1,0 +1,42 @@
+[
+  {
+    "id": "mp-scheme-index",
+    "url": "https://www.cmhelpline.mp.gov.in/Schmegrid.aspx?pointvalue=2&status=BySchemeFor",
+    "publisher": "Madhya Pradesh CM Helpline",
+    "checkedAt": "not-yet-checked",
+    "evidenceText": "Lead only; not yet read or verified.",
+    "status": "unverified"
+  },
+  {
+    "id": "aahar-anudan",
+    "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=904&pointvalue=2&status=BySchemeFor",
+    "publisher": "Madhya Pradesh CM Helpline",
+    "checkedAt": "not-yet-checked",
+    "evidenceText": "Lead only; not yet read or verified.",
+    "status": "unverified"
+  },
+  {
+    "id": "pvtg-dairy",
+    "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=981&pointvalue=2&status=byschemefor",
+    "publisher": "Madhya Pradesh CM Helpline",
+    "checkedAt": "not-yet-checked",
+    "evidenceText": "Lead only; not yet read or verified.",
+    "status": "unverified"
+  },
+  {
+    "id": "pm-janman-housing-mp",
+    "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=974&pointvalue=3&status=BySchemeBenifits",
+    "publisher": "Madhya Pradesh CM Helpline",
+    "checkedAt": "not-yet-checked",
+    "evidenceText": "Lead only; not yet read or verified.",
+    "status": "unverified"
+  },
+  {
+    "id": "pm-janman-union",
+    "url": "https://tribal.gov.in/about/divisions/pm-janman",
+    "publisher": "Ministry of Tribal Affairs",
+    "checkedAt": "not-yet-checked",
+    "evidenceText": "Lead only; not yet read or verified.",
+    "status": "unverified"
+  }
+]

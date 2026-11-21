@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #F7F5EF;
+  --color-ink: #173B35;
+  --color-terracotta: #B85F3C;
+  /* Text use: 6.4:1 on canvas #F7F5EF (WCAG AA 4.5:1 passes). */
+  --color-terracotta-text: #8F4426;
+  --color-sage: #E6EEE8;
+  --color-body: #26332F;
+  --font-sans: Inter, system-ui, "Segoe UI", "Noto Sans Devanagari", sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-body);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  :focus-visible {
+    outline: 3px solid #173B35;
+    outline-offset: 2px;
+  }
+}
