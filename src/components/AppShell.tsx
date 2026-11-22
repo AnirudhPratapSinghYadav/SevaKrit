@@ -92,28 +92,25 @@ export default function AppShell() {
         <Outlet />
       </main>
 
-      {!isImmersive && (
-        <footer className="border-t border-border/70 bg-surface-muted/80 backdrop-blur-md">
-          <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-5 text-sm lg:px-8">
-            <p>{t("footer")}</p>
-            <p>{t("langNote")}</p>
-            <div className="flex flex-wrap gap-x-4 gap-y-1">
-              <Link to="/privacy" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
-                {t("privacyLink")}
-              </Link>
-              <Link to="/glossary" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
-                {t("glossaryTitle")}
-              </Link>
-              <Link to="/samples" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
-                Samples
-              </Link>
-              <Link to="/review" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
-                Review
-              </Link>
-            </div>
+      <footer className="border-t border-border/70 bg-[#0c1f1b] text-white/85">
+        <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-5 text-sm lg:px-8">
+          <p>{t("footer")}</p>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link to="/privacy" className="inline-flex min-h-11 items-center text-accent-gold underline underline-offset-4">
+              {t("privacyLink")}
+            </Link>
+            <Link to="/glossary" className="inline-flex min-h-11 items-center text-accent-gold underline underline-offset-4">
+              {t("glossaryTitle")}
+            </Link>
+            <Link to="/help" className="inline-flex min-h-11 items-center text-accent-gold underline underline-offset-4">
+              {t("navHelp")}
+            </Link>
+            <Link to="/review" className="inline-flex min-h-11 items-center text-accent-gold underline underline-offset-4">
+              Review
+            </Link>
           </div>
-        </footer>
-      )}
+        </div>
+      </footer>
     </div>
   );
 }

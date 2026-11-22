@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import DocumentChecklist from "../components/DocumentChecklist";
 import FeatureRail from "../components/FeatureRail";
+import EmptyState from "../components/ui/EmptyState";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
@@ -40,18 +41,23 @@ export default function Plan() {
 
   if (actionable.length === 0) {
     return (
-      <section className="flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold text-ink">{t("planTitle")}</h1>
-        <p className="font-semibold">{t("planEmpty")}</p>
-        <p>
-          <Link to="/results" className="underline underline-offset-4">
-            {t("planReviewResults")}
-          </Link>
-          {" · "}
-          <Link to="/discover" className="underline underline-offset-4">
-            {t("planUpdate")}
-          </Link>
-        </p>
+      <section className="mx-auto flex w-full max-w-page flex-col gap-6 px-1">
+        <h1 className="font-display text-4xl font-semibold text-ink">{t("planTitle")}</h1>
+        <EmptyState
+          title={t("planEmpty")}
+          description={lang === "hi" ? "पहले परिणाम देखें, फिर यहाँ तैयारी।" : "Check results first, then prepare here."}
+          imageSrc="/images/ui/workspace-empty.jpg"
+          action={
+            <p className="flex flex-wrap justify-center gap-3">
+              <Link to="/results" className="btn-primary-glow inline-flex min-h-11 items-center rounded-full px-5 font-semibold text-canvas">
+                {t("planReviewResults")}
+              </Link>
+              <Link to="/discover" className="inline-flex min-h-11 items-center rounded-full border border-ink/30 px-5 font-semibold text-ink">
+                {t("planUpdate")}
+              </Link>
+            </p>
+          }
+        />
       </section>
     );
   }
@@ -134,24 +140,33 @@ export default function Plan() {
   }
 
   return (
-    <section className="flex flex-col gap-6">
-      <FeatureRail />
-      <h1 className="text-3xl font-semibold text-ink">{t("planTitle")}</h1>
-      <p className="text-sm">{t("planIntro")}</p>
-      <p className="flex flex-wrap gap-x-4 gap-y-2">
-        <Link to="/plan/print" className="underline underline-offset-4">
-          {t("planPrint")}
-        </Link>
-        <Link to="/tools/pocket" className="underline underline-offset-4">
-          {t("toolPocket")}
-        </Link>
-        <Link to="/tools/route" className="underline underline-offset-4">
-          {t("toolRoute")}
-        </Link>
-        <Link to="/tools/resolve" className="underline underline-offset-4">
-          {t("toolResolve")}
-        </Link>
-      </p>
+    <section className="mx-auto flex w-full max-w-page flex-col gap-6 px-1 pb-10">
+      <div className="no-print">
+        <FeatureRail />
+      </div>
+      <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h1 className="font-display text-4xl font-semibold text-ink">{t("planTitle")}</h1>
+          <p className="mt-2 max-w-2xl text-sm text-ink-soft">{t("planIntro")}</p>
+        </div>
+        <div className="no-print flex flex-wrap gap-2">
+          <Link
+            to="/plan/print"
+            className="btn-gold magnetic-cta pressable inline-flex min-h-11 items-center rounded-full px-5 font-semibold"
+          >
+            {t("printButton")}
+          </Link>
+          <Link to="/tools/pocket" className="inline-flex min-h-11 items-center rounded-full border border-ink/25 px-4 font-semibold text-ink">
+            {t("toolPocket")}
+          </Link>
+          <Link to="/tools/route" className="inline-flex min-h-11 items-center rounded-full border border-ink/25 px-4 font-semibold text-ink">
+            {t("toolRoute")}
+          </Link>
+          <Link to="/tools/resolve" className="inline-flex min-h-11 items-center rounded-full border border-ink/25 px-4 font-semibold text-ink">
+            {t("toolResolve")}
+          </Link>
+        </div>
+      </header>
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">{t("planReminders")}</h2>
         <p className="text-sm">

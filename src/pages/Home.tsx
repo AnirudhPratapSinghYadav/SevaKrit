@@ -55,8 +55,8 @@ export default function Home() {
             </h1>
             <p className="reveal reveal-delay-2 hero-lede max-w-xl text-lg md:text-xl">
               {hi
-                ? "मध्य प्रदेश के बैगा, भारिया, सहरिया परिवारों के लिए: संभावित सहायता, नियम-साक्ष्य, अगला ठोस कदम। सरकारी पोर्टल नहीं।"
-                : "For Baiga, Bharia and Sahariya households in Madhya Pradesh: possible benefits, rule evidence, a concrete next step. Not a government portal."}
+                ? "मध्य प्रदेश के बैगा, भारिया, सहरिया परिवारों के लिए: संभावित सहायता, नियम-साक्ष्य, अगला ठोस कदम।"
+                : "For Baiga, Bharia and Sahariya households in Madhya Pradesh: possible benefits, rule evidence, a concrete next step."}
             </p>
             <div className="reveal reveal-delay-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
@@ -246,6 +246,15 @@ export default function Home() {
 
           {/* C) Glass tool command dock */}
           <Chapter n={hi ? "९" : "9"} title={hi ? "पाँच उपकरण" : "Five tools, one journey"}>
+            <img
+              src="/images/ui/tools-pictograms.jpg"
+              width={1280}
+              height={720}
+              alt=""
+              aria-hidden="true"
+              className="mb-4 h-28 w-full rounded-2xl object-cover object-center"
+              loading="lazy"
+            />
             <nav className="tool-dock" aria-label={hi ? "हक़पथ उपकरण" : "HaqPath tools"}>
               {tools.map((tool, index) => (
                 <Link
@@ -278,14 +287,9 @@ export default function Home() {
               {hi ? "साइन इन / अतिथि" : "Sign in / Guest"}
             </Link>
           </div>
-          <p className="mt-6 text-sm text-canvas/70">
-            {hi
-              ? "स्वतंत्र तैयारी उपकरण। सरकारी वेबसाइट या आवेदन सेवा नहीं।"
-              : "Independent readiness tool. Not a government site or application service."}
-          </p>
           <p className="mt-3">
             <Link to="/privacy" className="text-sm font-semibold text-accent-gold underline underline-offset-4">
-              {hi ? "गोपनीयता और सीमाएँ पढ़ें" : "Read our privacy and limits"}
+              {hi ? "गोपनीयता" : "Privacy"}
             </Link>
           </p>
         </section>

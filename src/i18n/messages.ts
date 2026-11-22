@@ -3,7 +3,7 @@ export type Lang = "en" | "hi";
 export const MESSAGES = {
   en: {
     brand: "HaqPath",
-    tagline: "by SevaKrit · Independent guide — not a government portal",
+    tagline: "by SevaKrit · MP PVTG readiness guide",
     navDiscover: "Describe household",
     navResults: "Results",
     navPlan: "Plan",
@@ -14,7 +14,7 @@ export const MESSAGES = {
     langToggle: "हिंदी",
     langNote: "Interface Hindi is a product translation, not a certified government translation.",
     footer:
-      "Progress, reminders and confirmed answers stay in this browser only. They are not sent to a server and are not an official application.",
+      "Independent readiness tool — not a government portal. Progress stays in this browser only.",
     privacyLink: "Privacy and data handling",
     skip: "Skip to main content",
     notFoundTitle: "Page not found",
@@ -85,8 +85,7 @@ export const MESSAGES = {
       "These checks use the active rule version and your confirmed answers. They are not an official decision.",
     detailNoDeadline: "No verified deadline available on the recorded source.",
     detailVerifiedDeadline: "Verified deadline",
-    detailDisclaimer:
-      "Independent information service. Final decisions belong to the department. This page does not submit applications or check live government status.",
+    detailDisclaimer: "Departments decide. This page does not submit applications.",
     planIntro: "Showing schemes with a likely-fit result for your confirmed answers. Saved only in this browser.",
     planYourFollowUp: "Your follow-up",
     planPersonalFollowUp: "Personal follow-up",
@@ -174,7 +173,7 @@ export const MESSAGES = {
     dictationHint: "Dictation only fills the text box. You must still review and confirm every fact.",
     activityTitle: "On this device",
     activityEmpty: "No local activity notes yet.",
-    activityDisclaimer: "These notes are saved in this browser only. They are not government notifications.",
+    activityDisclaimer: "Saved on this device only.",
     confirmClearTitle: "Clear household data?",
     confirmClearBody:
       "This removes confirmed answers, progress, reminders and activity notes from this browser. Language preference is kept.",
@@ -183,7 +182,7 @@ export const MESSAGES = {
   },
   hi: {
     brand: "हक़पथ",
-    tagline: "सेवाकृत द्वारा · स्वतंत्र मार्गदर्शिका। सरकारी पोर्टल नहीं।",
+    tagline: "सेवाकृत द्वारा · म.प्र. PVTG तैयारी मार्गदर्शिका",
     navDiscover: "परिवार का विवरण",
     navResults: "परिणाम",
     navPlan: "योजना",
@@ -194,7 +193,7 @@ export const MESSAGES = {
     langToggle: "English",
     langNote: "हिंदी इंटरफ़ेस अनुवाद है, सरकारी प्रमाणित अनुवाद नहीं।",
     footer:
-      "प्रगति, रिमाइंडर और पुष्ट उत्तर केवल इसी ब्राउज़र में रहते हैं। इन्हें सर्वर पर नहीं भेजा जाता और यह आधिकारिक आवेदन नहीं है।",
+      "स्वतंत्र तैयारी उपकरण — सरकारी पोर्टल नहीं। प्रगति केवल इसी ब्राउज़र में।",
     privacyLink: "गोपनीयता और डेटा",
     skip: "मुख्य सामग्री पर जाएँ",
     notFoundTitle: "पृष्ठ नहीं मिला",
@@ -265,8 +264,7 @@ export const MESSAGES = {
       "ये जाँच सक्रिय नियम संस्करण और आपके पुष्ट उत्तरों पर आधारित हैं। यह आधिकारिक निर्णय नहीं है।",
     detailNoDeadline: "रिकॉर्ड किए गए स्रोत पर कोई सत्यापित समय सीमा उपलब्ध नहीं।",
     detailVerifiedDeadline: "सत्यापित समय सीमा",
-    detailDisclaimer:
-      "स्वतंत्र सूचना सेवा। अंतिम निर्णय विभाग का है। यह पृष्ठ आवेदन जमा नहीं करता और सरकारी स्थिति की जीवित जाँच नहीं करता।",
+    detailDisclaimer: "निर्णय विभाग का। यह पृष्ठ आवेदन जमा नहीं करता।",
     planIntro: "आपके पुष्ट उत्तरों के संभावित-योग्य परिणाम वाली योजनाएँ। केवल इसी ब्राउज़र में सहेजी गईं।",
     planYourFollowUp: "आपका अनुवर्ती",
     planPersonalFollowUp: "निजी अनुवर्ती",
@@ -352,7 +350,7 @@ export const MESSAGES = {
     dictationHint: "आवाज़ केवल पाठ भरती है। हर तथ्य की समीक्षा और पुष्टि फिर भी आवश्यक है।",
     activityTitle: "इस डिवाइस पर",
     activityEmpty: "अभी कोई स्थानीय गतिविधि नोट नहीं।",
-    activityDisclaimer: "ये नोट केवल इसी ब्राउज़र में सहेजे जाते हैं। ये सरकारी सूचनाएँ नहीं हैं।",
+    activityDisclaimer: "केवल इस डिवाइस पर।",
     confirmClearTitle: "परिवार का डेटा मिटाएँ?",
     confirmClearBody:
       "यह पुष्ट उत्तर, प्रगति, रिमाइंडर और गतिविधि नोट इस ब्राउज़र से हटा देगा। भाषा पसंद रहेगी।",

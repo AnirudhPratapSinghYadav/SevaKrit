@@ -35,8 +35,8 @@ export default function Assisted() {
       </h1>
       <p className="rounded-md bg-surface-muted px-4 py-3 text-base">
         {hi
-          ? "आप किसी और की मदद कर रहे हैं। यह सरकारी लॉगिन नहीं है। पहचान संख्या न लिखें।"
-          : "You are helping someone else. This is not a government login. Do not type identity numbers."}
+          ? "आप किसी और की मदद कर रहे हैं। पहचान संख्या न लिखें। सहमति पहले।"
+          : "You are helping someone else. Do not type identity numbers. Consent first."}
       </p>
       <p className="text-sm text-ink-soft">
         {hi ? `चरण ${step + 1} / ${STEPS.length}` : `Step ${step + 1} of ${STEPS.length}`}

@@ -2,12 +2,17 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import RuleTrace from "../components/RuleTrace";
 import SourceCard from "../components/SourceCard";
+import { LanguageProvider } from "../i18n/Language";
 import { evaluateSchemeDetailed } from "../domain/evaluate";
 import { allSources, NOW, ruleVersion, standardRules, syntheticScheme, verifiedSource } from "./fixtures";
 
+function renderEn(ui: React.ReactNode) {
+  return render(<LanguageProvider>{ui}</LanguageProvider>);
+}
+
 describe("SourceCard", () => {
   it("renders the status text and an external link with the correct href and rel", () => {
-    render(
+    renderEn(
       <SourceCard
         authority={verifiedSource.publisher}
         url={verifiedSource.url}
@@ -22,7 +27,7 @@ describe("SourceCard", () => {
   });
 
   it("shows 'Human verification date not recorded' when no verification date exists", () => {
-    render(
+    renderEn(
       <SourceCard
         authority={verifiedSource.publisher}
         url={verifiedSource.url}

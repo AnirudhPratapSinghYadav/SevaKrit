@@ -63,8 +63,8 @@ export default function Login() {
             </h1>
             <p className="max-w-lg text-lg text-canvas/85 md:text-xl">
               {hi
-                ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए स्रोत-बद्ध संभावित सहायता। सरकारी पोर्टल नहीं।"
-                : "Source-backed likely fits for Baiga, Bharia and Sahariya households in Madhya Pradesh. Not a government portal."}
+                ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए स्रोत-बद्ध संभावित सहायता।"
+                : "Source-backed likely fits for Baiga, Bharia and Sahariya households in Madhya Pradesh."}
             </p>
           </div>
           <ul className="relative z-10 mt-10 grid gap-3 text-sm text-canvas/85 sm:grid-cols-2">

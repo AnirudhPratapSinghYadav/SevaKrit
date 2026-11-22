@@ -3,6 +3,8 @@ import RuleTrace from "../components/RuleTrace";
 import SourceBadge from "../components/SourceBadge";
 import SourceCard from "../components/SourceCard";
 import DocumentChecklist from "../components/DocumentChecklist";
+import EmptyState from "../components/ui/EmptyState";
+import PrintPdfButton from "../components/PrintPdfButton";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { useLanguage } from "../i18n/Language";
@@ -23,20 +25,24 @@ export default function SchemeDetail() {
   const { profile } = useAppState();
   const { t, lang } = useLanguage();
   const scheme = slug ? getPublishedSchemeBySlug(slug) : undefined;
+  const hi = lang === "hi";
 
   if (!scheme) {
     return (
-      <section className="flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold text-ink">{t("detailNotFound")}</h1>
-        <p>
-          {lang === "hi"
+      <EmptyState
+        title={t("detailNotFound")}
+        description={
+          hi
             ? "इस लिंक से मेल खाने वाली कोई प्रकाशित योजना नहीं है, या वह अभी समीक्षाधीन है।"
-            : "No published scheme matches this link, or it is still under review."}
-        </p>
-        <Link to="/results" className="underline underline-offset-4">
-          {t("detailBack")}
-        </Link>
-      </section>
+            : "No published scheme matches this link, or it is still under review."
+        }
+        imageSrc="/images/ui/workspace-empty.jpg"
+        action={
+          <Link to="/results" className="btn-primary-glow inline-flex min-h-11 items-center rounded-full px-6 font-semibold text-canvas">
+            {t("detailBack")}
+          </Link>
+        }
+      />
     );
   }
 
@@ -47,32 +53,54 @@ export default function SchemeDetail() {
   const title = lang === "hi" && scheme.title.hi !== undefined ? scheme.title.hi : scheme.title.en;
 
   return (
-    <section className="flex flex-col gap-6">
-      <p>
+    <section className="scheme-print-sheet mx-auto flex w-full max-w-page flex-col gap-6 px-1 pb-10">
+      <p className="no-print">
         <Link to="/results" className="underline underline-offset-4">
           {t("detailBack")}
         </Link>
       </p>
-      <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-ink" lang={lang === "hi" && scheme.title.hi ? "hi" : undefined}>
-          {title}
-        </h1>
-        {lang === "en" && scheme.title.hi !== undefined && (
-          <p lang="hi" className="text-lg text-ink">
-            {scheme.title.hi}
+      <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-2">
+          <h1
+            className="font-display text-3xl font-semibold text-ink md:text-4xl"
+            lang={lang === "hi" && scheme.title.hi ? "hi" : undefined}
+          >
+            {title}
+          </h1>
+          {lang === "en" && scheme.title.hi !== undefined && (
+            <p lang="hi" className="text-lg text-ink">
+              {scheme.title.hi}
+            </p>
+          )}
+          {lang === "hi" && <p className="text-lg text-ink-soft">{scheme.title.en}</p>}
+          <p className="font-semibold text-ink">
+            {t("detailStatus")}: {t(OUTCOME_KEYS[detail.assessment.outcome])}
           </p>
-        )}
-        {lang === "hi" && (
-          <p className="text-lg text-ink-soft">{scheme.title.en}</p>
-        )}
-        <p className="font-semibold text-ink">
-          {t("detailStatus")}: {t(OUTCOME_KEYS[detail.assessment.outcome])}
-        </p>
-        <p className="text-sm">{scheme.department}</p>
+          <p className="text-sm text-ink-soft">{scheme.department}</p>
+        </div>
+        <div className="no-print flex flex-wrap gap-2">
+          <PrintPdfButton label={t("printButton")} className="btn-gold magnetic-cta no-print inline-flex min-h-11 items-center rounded-full px-5 font-semibold" />
+          {primarySource && (
+            <a
+              href={primarySource.url}
+              rel="noopener noreferrer"
+              target="_blank"
+              className="btn-official pressable"
+            >
+              {hi ? "आधिकारिक स्रोत खोलें" : "Open official source"}
+            </a>
+          )}
+        </div>
       </header>
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">{t("detailOfficialSource")}</h2>
+      <p className="rounded-2xl border border-border/60 bg-surface-muted/70 px-4 py-3 text-sm text-ink-soft print:border-0 print:bg-transparent">
+        {hi
+          ? "यह हक़पथ तैयारी सारांश है — सरकारी प्रमाणपत्र नहीं। प्रिंट/PDF से सहेजें।"
+          : "This is a HaqPath readiness summary — not a government certificate. Use Print / Save as PDF."}
+      </p>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="font-display text-xl font-semibold text-ink">{t("detailOfficialSource")}</h2>
         {scheme.sourceIds.map((sourceId) => {
           const source = sources.find((item) => item.id === sourceId);
           return source ? (
@@ -88,7 +116,7 @@ export default function SchemeDetail() {
             </p>
           );
         })}
-        <p className="text-sm">
+        <p className="text-sm text-ink-soft">
           Last human verification on this record: {scheme.lastVerified ?? "not recorded"}
         </p>
         {primarySource && (
@@ -102,8 +130,8 @@ export default function SchemeDetail() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">{t("detailEvidence")}</h2>
-        <p className="text-sm">{t("detailEvidenceHint")}</p>
+        <h2 className="font-display text-xl font-semibold text-ink">{t("detailEvidence")}</h2>
+        <p className="text-sm text-ink-soft">{t("detailEvidenceHint")}</p>
         <RuleTrace results={detail.results} />
         {detail.notes.map((note) => (
           <p key={note} className="text-sm">
@@ -113,18 +141,18 @@ export default function SchemeDetail() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">{t("detailDocuments")}</h2>
+        <h2 className="font-display text-xl font-semibold text-ink">{t("detailDocuments")}</h2>
         <DocumentChecklist documents={scheme.documents} />
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">{t("detailPath")}</h2>
+        <h2 className="font-display text-xl font-semibold text-ink">{t("detailPath")}</h2>
         <p className="text-sm">{scheme.applicationChannel}</p>
         <StepTimeline steps={scheme.steps} />
       </section>
 
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">{t("detailDeadline")}</h2>
+        <h2 className="font-display text-xl font-semibold text-ink">{t("detailDeadline")}</h2>
         <p>
           {scheme.deadline === null
             ? t("detailNoDeadline")
@@ -132,31 +160,26 @@ export default function SchemeDetail() {
         </p>
       </section>
 
-      <p className="rounded-md bg-surface-muted px-4 py-3 text-sm">{t("detailDisclaimer")}</p>
-
-      <div className="flex flex-wrap gap-3">
+      <div className="no-print flex flex-wrap gap-3">
         <Link
           to="/plan"
-          className="inline-flex min-h-11 items-center rounded-md bg-ink px-4 font-semibold text-canvas"
+          className="btn-primary-glow inline-flex min-h-11 items-center rounded-full px-5 font-semibold text-canvas"
         >
           {t("detailOpenPlan")}
         </Link>
         <Link
           to="/tools/compass"
-          className="inline-flex min-h-11 items-center rounded-md border border-ink px-4 font-semibold text-ink"
+          className="inline-flex min-h-11 items-center rounded-full border border-ink/30 bg-surface px-5 font-semibold text-ink"
         >
           {t("toolCompass")}
         </Link>
         <Link
           to="/tools/watch"
-          className="inline-flex min-h-11 items-center rounded-md border border-ink px-4 font-semibold text-ink"
+          className="inline-flex min-h-11 items-center rounded-full border border-ink/30 bg-surface px-5 font-semibold text-ink"
         >
           {t("toolWatch")}
         </Link>
-        <Link
-          to="/tools/resolve"
-          className="inline-flex min-h-11 items-center text-sm underline underline-offset-4"
-        >
+        <Link to="/tools/resolve" className="inline-flex min-h-11 items-center text-sm font-semibold underline underline-offset-4">
           {t("toolResolve")}
         </Link>
       </div>
