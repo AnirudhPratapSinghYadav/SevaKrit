@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppState } from "../context/AppState";
 
 export default function Privacy() {
-  const { resetHousehold } = useAppState();
+  const { resetHousehold, confirmedFacts, unknownFacts } = useAppState();
   const [cleared, setCleared] = useState(false);
 
   return (
@@ -62,6 +62,24 @@ export default function Privacy() {
           Clear this browser&apos;s household data
         </button>
         {cleared && <p role="status">Household data in this browser was cleared.</p>}
+        <button
+          type="button"
+          onClick={() => {
+            const blob = new Blob(
+              [JSON.stringify({ confirmedFacts, unknownFacts }, null, 2)],
+              { type: "application/json" },
+            );
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement("a");
+            anchor.href = url;
+            anchor.download = "haqpath-confirmed-facts.json";
+            anchor.click();
+            URL.revokeObjectURL(url);
+          }}
+          className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
+        >
+          Download confirmed facts (no story text)
+        </button>
       </section>
 
       <p className="text-sm">

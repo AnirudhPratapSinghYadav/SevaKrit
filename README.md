@@ -1,80 +1,157 @@
-# HaqPath
+# HaqPath by SevaKrit
 
-## Overview
+Independent, multilingual, explainable **benefits discovery and application-readiness** companion for Madhya Pradesh PVTG households (demo lead: synthetic Baiga household in Dindori).
 
-HaqPath is an independent, plain-language guide for households in Madhya Pradesh (Baiga, Bharia and Sahariya households). It helps a household describe its situation in plain words, see which benefit schemes may fit and why, learn which documents to gather, and find the official office or portal to use.
+**Not a government portal.** Results are rule comparisons, never approvals. No Aadhaar, bank numbers, OTPs, or document scans.
 
-HaqPath is **not** a government portal, does not make eligibility decisions, and does not submit applications. Results are "likely" guidance only.
+## Product map
 
-HaqPath never asks for Aadhaar, bank account numbers, OTPs or document scans.
+```mermaid
+flowchart LR
+  Home["Home / nine chapters"] --> Discover["/discover intake"]
+  Discover --> Confirm["Confirm facts"]
+  Confirm --> Questions["Decisive follow-ups"]
+  Questions --> Results["/results"]
+  Results --> Detail["/schemes/:slug"]
+  Results --> Plan["/plan likely-fit only"]
+  Plan --> Print["/plan/print"]
+  Plan --> ICS[".ics reminder"]
+  Home --> Assisted["/assisted"]
+  Assisted --> Results
+  Reviewer["/review + Auth"] --> Publish["publish_rule_version RPC"]
+  Publish --> Audit["review_events append-only"]
+```
 
-Demo mode: answers and progress are stored only in this browser. Nothing is sent to a server.
+## Architecture
+
+```mermaid
+flowchart TB
+  subgraph ui [React Vite UI]
+    Pages[pages]
+    Shell[AppShell + i18n]
+  end
+  subgraph domain [Pure domain]
+    Evaluate[evaluate]
+    Rules[ruleSelection]
+    Questions[decisiveQuestions]
+    Readiness[readiness]
+  end
+  subgraph data [Curated offline catalogue]
+    Schemes[schemes.json]
+    Versions[ruleVersions.json]
+    Sources[sources.json]
+  end
+  subgraph local [Browser persistence]
+    Household[household.v1]
+    Progress[progress.v1]
+    Reminders[reminders.v1]
+  end
+  subgraph backend [Optional Supabase]
+    RLS[RLS policies]
+    Auth[GoTrue Auth]
+    RPC[publish_rule_version]
+  end
+  Pages --> Evaluate
+  Evaluate --> Versions
+  Evaluate --> Sources
+  Pages --> Household
+  Pages --> Progress
+  ReviewerUI[ReviewSession] --> Auth
+  ReviewerUI --> RPC
+  RPC --> RLS
+```
+
+## Routes
+
+| Route | Job |
+| --- | --- |
+| `/` | Nine-chapter editorial home + story images |
+| `/discover` | Typed intake, confirm, follow-ups |
+| `/results` | Four outcome buckets from one evaluator |
+| `/schemes/:slug` | Rule trace, sources, steps |
+| `/plan` | Likely-fit readiness, progress, ICS |
+| `/plan/print` | A4 action sheet |
+| `/assisted` | Guided helper consent + reset |
+| `/help`, `/how-it-works`, `/glossary`, `/privacy` | Trust and privacy |
+| `/samples` | Synthetic household outcomes |
+| `/review` | Catalogue + Supabase sign-in when configured |
+
+## Outcomes
+
+| Internal id | Citizen label | Meaning |
+| --- | --- | --- |
+| `likely_fit` | Likely fit / संभावित योग्यता | Confirmed answers meet reviewed rules |
+| `needs_information` | Needs information | Missing or unknown fact |
+| `likely_mismatch` | Likely mismatch | Confirmed answer conflicts with a reviewed rule |
+| `source_review_needed` | Source under review | Stale / unverified / conflicting source |
 
 ## Setup
 
 ```bash
 npm install
-npm run dev        # local development server
-npm run build      # production build
-npm run typecheck  # TypeScript check
-npm run lint       # ESLint
-npm run test       # unit and component tests (Vitest)
-npm run test:e2e   # end-to-end tests — arrives in Phase C
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+npm run test:e2e
+npm run dev
 ```
 
-## Architecture map
+### Local Supabase (optional, for reviewer RLS)
 
-- `src/domain/` — pure logic and Zod schemas (`types.ts`); no UI or I/O.
-- `src/data/` — catalogue JSON (`schemes.json`).
-- `src/services/` — adapters for storage and other I/O (added in later phases).
-- `src/pages/` — route-level screens.
-- `src/components/` — shared UI (app shell, source badge).
-- `src/tests/` — test setup and smoke tests.
-- `data/sources.json` — source ledger: every official source HaqPath relies on, with publisher, URL, check date and status.
+Requires Docker Desktop. This repo remaps ports to **54421+** so it can run beside another local Supabase project.
 
-## Source limits
+```bash
+npm run supabase:start
+# then copy API URL + anon + service_role + DB URL into the shell (never commit them)
+npx supabase status -o env
+npm run test:rls
+```
 
-- Every source in `data/sources.json` is currently `unverified` with `checkedAt` set to `not-yet-checked`.
-- Schemes in `src/data/schemes.json` have status `draft`, empty rules and null deadlines.
-- The organizer's Problem Statement 5 PDF was **not** verified in this phase.
-- No scheme is shown as confirmed.
+Environment names only (see `.env.example`):
 
-## Requirement-to-phase mapping
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
 
-| Requirement | Phase |
-| --- | --- |
-| PS5 typed input | C |
-| Eligibility reasoning | B |
-| Document checklist and steps | C |
-| Reminders and tracking | D |
-| Official links and `last_verified` | A / C |
-| Editable, versioned rules | E |
-| Public data and synthetic tests | B / F |
-| No ID collection | A / F |
+Never put a service-role key in a `VITE_` variable.
+
+### Deploy (Vercel)
+
+`vercel.json` provides SPA rewrites and security headers. From a machine with Vercel access:
+
+```bash
+npx vercel --prod
+```
+
+Set production env vars in the Vercel project UI if a hosted Supabase project is connected.
 
 ## Design tokens
 
-| Token | Hex | Use |
+| Token | Hex |
+| --- | --- |
+| Canvas | `#F7F5F0` |
+| Brand / forest | `#173B35` |
+| Sage muted | `#ECF1EC` |
+| Earth | `#9C552E` |
+| Fonts | Newsreader, Inter, Noto Sans Devanagari |
+
+## Evidence honesty
+
+- Published demo scheme: **PM-JANMAN rural housing (MP)** from CM Helpline Schemeid=974 (record verification date on the catalogue row).
+- Documents and deadline remain **unstated / null** when the source does not list them — never invented.
+- Aahar Anudan and dairy remain **draft**.
+- Story images are **AI-generated illustrations**, not documentary photos of beneficiaries.
+- Nagarakshak is an owned sibling reference for auth/RLS/audit *patterns*; civic complaint/map modules are **not** ported into HaqPath.
+
+## Tests
+
+| Layer | Command | What it proves |
 | --- | --- | --- |
-| `canvas` | `#F7F5EF` | Page background |
-| `ink` | `#173B35` | Headings and primary button |
-| `terracotta` | `#B85F3C` | Decorative elements only |
-| `terracotta-text` | `#8F4426` | Text and links (contrast choice) |
-| `sage` | `#E6EEE8` | Panels and footer |
-| `body` | `#26332F` | Body text |
+| Static | `typecheck`, `lint`, `build` | Contracts compile |
+| Unit | `npm test` | Engine, ICS, sensitive input, demo households |
+| Browser | `npm run test:e2e` | Citizen journey + responsive routes |
+| RLS | `npm run test:rls` | Real local Postgres roles (when stack is up) |
 
-Contrast choice: `#B85F3C` is too light for body-sized text on the canvas, so text and links use the darker `#8F4426` (6.4:1 on `#F7F5EF`, WCAG AA). `#B85F3C` is reserved for decorative elements.
+## Status
 
-## Environment
-
-- Developed on a Windows host.
-- No git remote yet. Local repository only; do not push.
-
-## Current state
-
-Phase A scaffold: app shell, placeholder pages, source badge, test setup and a smoke test are written. Install and checks have not yet been verified.
-
-## Next action
-
-Verify install and checks (`npm install`, typecheck, lint, build, test), commit locally, then start Phase B (deterministic sourced eligibility engine).
-
+See `STATUS.md` for the latest verified checkpoint, blockers, and exact commands run.

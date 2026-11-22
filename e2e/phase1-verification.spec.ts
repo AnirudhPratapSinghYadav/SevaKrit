@@ -13,6 +13,8 @@ const ROUTES = [
   "/help",
   "/how-it-works",
   "/assisted",
+  "/glossary",
+  "/samples",
   "/schemes/pm-janman-housing-mp",
 ] as const;
 const VIEWPORTS = [

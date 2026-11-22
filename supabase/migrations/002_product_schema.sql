@@ -80,7 +80,7 @@ create table if not exists public.source_records (
   effective_to date,
   evidence_text text not null check (char_length(evidence_text) <= 300),
   verification_status text not null
-    check (verification_status in ('verified', 'unverified')),
+    check (verification_status in ('verified', 'unverified', 'conflicting')),
   publication_status text not null default 'draft'
     check (publication_status in ('draft', 'reviewed', 'published')),
   created_at timestamptz not null default now(),
@@ -176,7 +176,7 @@ create table if not exists public.profiles (
   id uuid primary key default gen_random_uuid(),
   owner_id uuid not null unique references auth.users (id) on delete cascade,
   confirmed_facts jsonb not null default '{}'::jsonb
-    check ((confirmed_facts - array['tribalGroup', 'district', 'houseType', 'dairyIntent']::text[]) = '{}'::jsonb),
+    check ((confirmed_facts - array['tribalGroup', 'district', 'houseType', 'dairyIntent', 'settlementArea', 'hasGovernmentEmployee']::text[]) = '{}'::jsonb),
   unknown_facts text[] not null default '{}',
   version integer not null default 1 check (version >= 1),
   consent_at timestamptz,

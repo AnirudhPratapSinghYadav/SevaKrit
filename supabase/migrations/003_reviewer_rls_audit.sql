@@ -343,12 +343,24 @@ begin
     raise exception 'rule version already published';
   end if;
 
+  if exists (
+    select 1
+    from public.rule_version_source_links l
+    join public.source_records s on s.id = l.source_record_id
+    where l.rule_version_id = p_version_id
+      and s.verification_status = 'conflicting'
+  ) then
+    raise exception 'conflicting source blocks publication';
+  end if;
+
   if not exists (
     select 1
     from public.rule_version_source_links l
     join public.source_records s on s.id = l.source_record_id
     where l.rule_version_id = p_version_id
       and s.human_verified_at is not null
+      and s.verification_status = 'verified'
+      and s.publication_status = 'published'
   ) then
     raise exception 'source not human-verified';
   end if;
@@ -364,3 +376,58 @@ $$;
 
 revoke execute on function public.publish_rule_version(text, text) from public, anon;
 grant execute on function public.publish_rule_version(text, text) to authenticated;
+
+-- Callers can learn their own role without reading every membership row.
+create or replace function public.current_reviewer_role()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select m.role
+  from public.reviewer_memberships m
+  where m.user_id = auth.uid()
+    and m.active = true
+  limit 1
+$$;
+
+revoke execute on function public.current_reviewer_role() from public, anon;
+grant execute on function public.current_reviewer_role() to authenticated;
+
+-- Explicit grants. RLS still decides which rows each role may see.
+grant usage on schema public to anon, authenticated;
+grant select on
+  public.source_records,
+  public.schemes,
+  public.scheme_source_links,
+  public.scheme_documents,
+  public.scheme_steps,
+  public.scheme_deadlines,
+  public.rule_versions,
+  public.rule_version_source_links,
+  public.rules
+to anon, authenticated;
+
+grant insert, update on
+  public.source_records,
+  public.schemes,
+  public.scheme_source_links,
+  public.scheme_documents,
+  public.scheme_steps,
+  public.scheme_deadlines,
+  public.rule_versions,
+  public.rule_version_source_links,
+  public.rules
+to authenticated;
+
+grant select, insert, update, delete on
+  public.profiles,
+  public.assessments,
+  public.assessment_source_links,
+  public.progress_events,
+  public.reminders
+to authenticated;
+
+revoke all on public.reviewer_memberships from anon, authenticated;
+revoke all on public.review_audit from anon, authenticated;

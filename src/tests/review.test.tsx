@@ -5,13 +5,11 @@ import Review from "../pages/Review";
 describe("Review reviewer panel", () => {
   const html = renderToStaticMarkup(<Review />);
 
-  it("shows the read-only notice", () => {
-    expect(html).toContain(
-      "Editing is disabled in this demo. Publishing a new rule version needs a verified reviewer role on the server, which is not configured.",
-    );
+  it("explains that sign-in needs Supabase configuration", () => {
+    expect(html).toContain("Sign-in is unavailable");
   });
 
-  it("renders no buttons or form inputs", () => {
+  it("does not render a fake local admin form without Supabase", () => {
     expect(html).not.toContain("<button");
     expect(html).not.toContain("<input");
     expect(html).not.toContain("<form");

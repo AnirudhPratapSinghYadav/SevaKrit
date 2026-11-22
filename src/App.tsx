@@ -4,6 +4,7 @@ import { AppStateProvider } from "./context/AppState";
 import { LanguageProvider, useLanguage } from "./i18n/Language";
 import ActionSheet from "./pages/ActionSheet";
 import Assisted from "./pages/Assisted";
+import Glossary from "./pages/Glossary";
 import Help from "./pages/Help";
 import Home from "./pages/Home";
 import HowItWorks from "./pages/HowItWorks";
@@ -13,6 +14,7 @@ import Plan from "./pages/Plan";
 import Privacy from "./pages/Privacy";
 import Results from "./pages/Results";
 import Review from "./pages/Review";
+import Samples from "./pages/Samples";
 import SchemeDetail from "./pages/SchemeDetail";
 
 function SkipLink() {
@@ -42,6 +44,8 @@ export default function App() {
               <Route path="/assisted" element={<Assisted />} />
               <Route path="/help" element={<Help />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/glossary" element={<Glossary />} />
+              <Route path="/samples" element={<Samples />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/review" element={<Review />} />
               <Route path="*" element={<NotFound />} />

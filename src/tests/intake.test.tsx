@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { AppStateProvider } from "../context/AppState";
+import { LanguageProvider } from "../i18n/Language";
 import Intake from "../pages/Intake";
 
 // Synthetic example text, matching the product brief.
@@ -11,9 +12,11 @@ const EXAMPLE =
 function renderIntake() {
   return render(
     <MemoryRouter>
-      <AppStateProvider>
-        <Intake />
-      </AppStateProvider>
+      <LanguageProvider>
+        <AppStateProvider>
+          <Intake />
+        </AppStateProvider>
+      </LanguageProvider>
     </MemoryRouter>,
   );
 }
@@ -47,21 +50,23 @@ describe("Intake", () => {
     fireEvent.change(screen.getByLabelText("Tell us about your household in your own words"), {
       target: { value: "Baiga family in Dindori, Aadhaar 1234 5678 9012" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
-    expect(screen.getByRole("status").textContent).toContain("Remove it");
+    fireEvent.click(screen.getByRole("button", { name: /Read my description|मेरा वर्णन पढ़ें/ }));
+    expect(screen.getAllByRole("status").some((el) => el.textContent?.includes("Remove it"))).toBe(true);
     expect(screen.queryByText("Details we found")).toBeNull();
   });
 
   it("shows a message for empty input", () => {
     renderIntake();
-    fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
-    expect(screen.getByRole("status").textContent).toContain("Please describe your household");
+    fireEvent.click(screen.getByRole("button", { name: /Read my description|मेरा वर्णन पढ़ें/ }));
+    expect(
+      screen.getAllByRole("status").some((el) => el.textContent?.includes("Please describe your household")),
+    ).toBe(true);
   });
 
   it("offers Yes / No / I don't know for government-employee follow-up", () => {
     renderIntake();
-    fireEvent.click(screen.getByRole("button", { name: "Use the example" }));
-    fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
+    fireEvent.click(screen.getByRole("button", { name: /Use the example|उदाहरण भरें/ }));
+    fireEvent.click(screen.getByRole("button", { name: /Read my description|मेरा वर्णन पढ़ें/ }));
     while (screen.queryAllByRole("button", { name: "Confirm" }).length > 0) {
       fireEvent.click(screen.getAllByRole("button", { name: "Confirm" })[0]!);
     }

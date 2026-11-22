@@ -41,6 +41,10 @@ export default function Help() {
           How the check works
         </Link>
         {" · "}
+        <Link to="/glossary" className="underline underline-offset-4">
+          Status meanings
+        </Link>
+        {" · "}
         <Link to="/privacy" className="underline underline-offset-4">
           Privacy
         </Link>

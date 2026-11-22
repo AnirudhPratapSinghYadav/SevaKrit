@@ -1,17 +1,28 @@
 import { getAllDraftSchemes, getPublishedSchemes, getSources } from "../services/schemeRepository";
+import { getSupabase } from "../services/supabaseBrowser";
+import ReviewSession from "./ReviewSession";
 
 // Read-only reviewer panel. It shows catalogue state and performs no writes.
 export default function Review() {
   const schemes = [...getPublishedSchemes(), ...getAllDraftSchemes()];
   const sources = getSources();
+  const remote = getSupabase();
 
   return (
     <section className="flex flex-col gap-6">
       <h1 className="text-3xl font-semibold text-ink">Reviewer panel</h1>
       <p>
-        Editing is disabled in this demo. Publishing a new rule version needs a verified reviewer role on
-        the server, which is not configured.
+        The catalogue below is the local reviewed file set. Publishing goes through the database only when
+        Supabase is configured. There is no password stored in the page.
       </p>
+      {remote === null ? (
+        <p>
+          Sign-in is unavailable until VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set. Draft edits
+          stay disabled.
+        </p>
+      ) : (
+        <ReviewSession client={remote} />
+      )}
 
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">Schemes</h2>

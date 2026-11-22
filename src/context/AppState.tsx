@@ -4,6 +4,7 @@ import { coerceFollowUpAnswer } from "../services/coerceFact";
 import { loadHousehold, saveHousehold } from "../services/householdStore";
 import { clearHouseholdData } from "../services/localData";
 import { parseNarrative, type ProposedFact } from "../services/parseNarrative";
+import { scanSensitiveInput } from "../services/sensitiveInput";
 
 type FactValue = HouseholdProfile["confirmedFacts"][string];
 
@@ -23,6 +24,8 @@ export interface AppStateValue {
   answerFollowUp: (factKey: string, answer: string) => string | null;
   /** Clears confirmed answers in this browser. Language preference is kept. */
   resetHousehold: () => void;
+  /** Structured answer, same coercion as a follow-up. Does not store the raw story. */
+  setManualFact: (factKey: string, raw: string) => string | null;
 }
 
 const AppStateContext = createContext<AppStateValue | null>(null);
@@ -73,6 +76,35 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return null;
   }, []);
 
+  const setManualFact = useCallback((factKey: string, raw: string): string | null => {
+    const sensitive = scanSensitiveInput(raw);
+    if (sensitive.blocked) return sensitive.message;
+    const coerced = coerceFollowUpAnswer(factKey, raw);
+    if (coerced.kind === "invalid") return coerced.message;
+    if (coerced.kind === "unknown") {
+      setUnknownFacts((current) => (current.includes(factKey) ? current : [...current, factKey]));
+      setConfirmedFacts((current) => {
+        const next = { ...current };
+        delete next[factKey];
+        return next;
+      });
+      setFollowUpAnswers((current) => {
+        const next = { ...current };
+        delete next[factKey];
+        return next;
+      });
+      return null;
+    }
+    setConfirmedFacts((current) => ({ ...current, [factKey]: coerced.value }));
+    setUnknownFacts((current) => current.filter((key) => key !== factKey));
+    setFollowUpAnswers((current) => {
+      const next = { ...current };
+      delete next[factKey];
+      return next;
+    });
+    return null;
+  }, []);
+
   const resetHousehold = useCallback(() => {
     setNarrative("");
     setProposed([]);
@@ -108,6 +140,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       removeProposal,
       answerFollowUp,
       resetHousehold,
+      setManualFact,
     }),
     [
       narrative,
@@ -121,6 +154,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       removeProposal,
       answerFollowUp,
       resetHousehold,
+      setManualFact,
     ],
   );
 

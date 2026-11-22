@@ -13,11 +13,11 @@ export default function AppShell() {
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas text-body">
-      <header className="border-b border-border bg-canvas">
+      <header className="sticky top-0 z-20 border-b border-border bg-canvas/95 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-3 md:max-w-content">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex flex-col">
-              <Link to="/" className="inline-flex min-h-11 items-center text-2xl font-semibold text-ink">
+              <Link to="/" className="inline-flex min-h-11 items-center font-display text-2xl font-semibold text-ink">
                 {t("brand")}
               </Link>
               <p className="text-sm text-ink-soft">{t("tagline")}</p>
@@ -26,6 +26,7 @@ export default function AppShell() {
               type="button"
               onClick={toggle}
               className="min-h-11 rounded-md border border-ink px-3 font-semibold text-ink"
+              lang={undefined}
             >
               {t("langToggle")}
             </button>
@@ -44,17 +45,27 @@ export default function AppShell() {
                 {item.label}
               </NavLink>
             ))}
-            <Link to="/assisted" className="inline-flex min-h-11 items-center text-accent-earth underline-offset-4 hover:underline">
-              Assisted
+            <Link
+              to="/assisted"
+              className="inline-flex min-h-11 items-center text-accent-earth underline-offset-4 hover:underline"
+            >
+              {t("navAssisted")}
             </Link>
-            <Link to="/how-it-works" className="inline-flex min-h-11 items-center text-accent-earth underline-offset-4 hover:underline">
-              How it works
+            <Link
+              to="/how-it-works"
+              className="inline-flex min-h-11 items-center text-accent-earth underline-offset-4 hover:underline"
+            >
+              {t("navHow")}
             </Link>
           </nav>
         </div>
       </header>
 
-      <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none md:max-w-content">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none md:max-w-content"
+      >
         <Outlet />
       </main>
 
@@ -62,12 +73,17 @@ export default function AppShell() {
         <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-4 text-sm md:max-w-content">
           <p>{t("footer")}</p>
           <p>{t("langNote")}</p>
-          <Link
-            to="/privacy"
-            className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4"
-          >
-            {t("privacyLink")}
-          </Link>
+          <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <Link to="/privacy" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
+              {t("privacyLink")}
+            </Link>
+            <Link to="/glossary" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
+              {t("glossaryTitle")}
+            </Link>
+            <Link to="/samples" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
+              Samples
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

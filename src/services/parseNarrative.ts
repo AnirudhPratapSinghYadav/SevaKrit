@@ -91,7 +91,15 @@ function findWord(text: string, words: readonly string[]): Hit | null {
   return null;
 }
 
+/** True when the text names both a kutcha and a pucca house, so neither is proposed. */
+export function conflictingHouseWords(text: string): boolean {
+  const kutcha = KUTCHA_WORDS.some((word) => new RegExp(`\\b${word}\\b`, "i").test(text));
+  const pucca = PUCCA_WORDS.some((word) => new RegExp(`\\b${word}\\b`, "i").test(text));
+  return kutcha && pucca;
+}
+
 function findHouseType(text: string): Hit | null {
+  if (conflictingHouseWords(text)) return null;
   const kutcha = findWord(text, KUTCHA_WORDS);
   if (kutcha) return { value: "kutcha", snippet: kutcha.snippet };
   const pucca = findWord(text, PUCCA_WORDS);

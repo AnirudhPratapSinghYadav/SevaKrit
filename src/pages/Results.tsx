@@ -1,31 +1,35 @@
 import { Link } from "react-router-dom";
+import ConnectionBadge from "../components/ConnectionBadge";
 import RuleTrace from "../components/RuleTrace";
+import SafeSummary from "../components/SafeSummary";
 import SourceBadge from "../components/SourceBadge";
 import { useAppState } from "../context/AppState";
-import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import type { Outcome } from "../domain/types";
+import { useLanguage } from "../i18n/Language";
+import type { MessageKey } from "../i18n/messages";
 import { evaluatePublishedSchemes } from "../services/evaluatePublished";
 import { getPublishedSchemes, getSources } from "../services/schemeRepository";
 
-const SECTIONS: { outcome: Outcome }[] = [
-  { outcome: "likely_fit" },
-  { outcome: "needs_information" },
-  { outcome: "likely_mismatch" },
-  { outcome: "source_review_needed" },
+const SECTION_KEYS: { outcome: Outcome; label: MessageKey }[] = [
+  { outcome: "likely_fit", label: "likelyFit" },
+  { outcome: "needs_information", label: "needsInformation" },
+  { outcome: "likely_mismatch", label: "likelyMismatch" },
+  { outcome: "source_review_needed", label: "sourceUnderReview" },
 ];
 
 export default function Results() {
   const { profile } = useAppState();
+  const { t } = useLanguage();
   const published = getPublishedSchemes();
 
   if (published.length === 0) {
     return (
       <section className="flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold text-ink">Results</h1>
+        <h1 className="font-display text-3xl font-semibold text-ink">{t("resultsTitle")}</h1>
         <p className="font-semibold">No scheme is confirmed yet. Official rules are still being verified.</p>
         <p>
           <Link to="/discover" className="underline underline-offset-4">
-            Back to your description
+            {t("resultsEdit")}
           </Link>
         </p>
       </section>
@@ -38,28 +42,36 @@ export default function Results() {
 
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-3xl font-semibold text-ink">Results</h1>
-      <p className="text-sm">
-        These are checks against official rules, not a decision. Confirm with the official office before applying.
-      </p>
-      <p>
+      <h1 className="font-display text-3xl font-semibold text-ink">{t("resultsTitle")}</h1>
+      <ConnectionBadge />
+      <p className="text-sm">{t("resultsDisclaimer")}</p>
+      <div className="flex flex-wrap items-center gap-4">
         <Link to="/discover" className="underline underline-offset-4">
-          Edit answers
+          {t("resultsEdit")}
         </Link>
-      </p>
-      {SECTIONS.map((section) => {
+        <Link to="/glossary" className="underline underline-offset-4">
+          {t("glossaryTitle")}
+        </Link>
+        <SafeSummary entries={entries} />
+      </div>
+      {SECTION_KEYS.map((section) => {
         const items = entries.filter((entry) => entry.detail.assessment.outcome === section.outcome);
         return (
           <section key={section.outcome} className="flex flex-col gap-3">
             <h2 className="text-xl font-semibold text-ink">
-              {OUTCOME_LABELS[section.outcome]} ({items.length})
+              {t(section.label)} ({items.length})
             </h2>
             {items.length === 0 ? (
               <p className="text-sm">None.</p>
             ) : (
               items.map(({ scheme, detail }) => (
-                <article key={scheme.id} className="flex flex-col gap-2 rounded-md border border-sage p-4">
+                <article key={scheme.id} className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
                   <h3 className="font-semibold text-ink">{scheme.title.en}</h3>
+                  {scheme.title.hi !== undefined && (
+                    <p lang="hi" className="text-sm text-ink-soft">
+                      {scheme.title.hi}
+                    </p>
+                  )}
                   <p className="text-sm">{scheme.department}</p>
                   {detail.assessment.sourceIds.map((sourceId) => {
                     const source = sources.find((item) => item.id === sourceId);

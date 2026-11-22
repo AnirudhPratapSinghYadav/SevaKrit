@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useLanguage } from "../i18n/Language";
 
 const primaryLink =
   "inline-flex min-h-11 items-center justify-center rounded-md bg-ink px-5 py-3 text-center font-semibold text-canvas hover:opacity-90";
@@ -13,24 +14,29 @@ const storyImage = "aspect-[3/2] w-full rounded-md object-cover";
 const storyCaption = "text-sm text-ink-soft";
 
 export default function Home() {
+  const { lang } = useLanguage();
+  const hi = lang === "hi";
   return (
     <div className="flex flex-col gap-16">
       {/* Chapter 1 — Hook */}
       <section id="hook" className="flex flex-col gap-6 pt-4">
         <p className={chapterMarker}>Chapter 1</p>
-        <h1 className="text-4xl font-semibold leading-tight text-ink md:text-5xl">
-          You shouldn&apos;t need to know a scheme&apos;s name to find a way forward.
+        <h1 className="font-display text-4xl font-semibold leading-tight text-ink md:text-5xl">
+          {hi
+            ? "किसी योजना का नाम जाने बिना भी आगे का रास्ता मिलना चाहिए।"
+            : "You shouldn't need to know a scheme's name to find a way forward."}
         </h1>
         <p className="text-lg text-ink-soft">
-          HaqPath helps Baiga, Bharia and Sahariya households in Madhya Pradesh understand possible
-          government benefits, see why they may qualify, and know what to do next.
+          {hi
+            ? "हक़पथ मध्य प्रदेश के परिवारों को संभावित सहायता, उसके नियम और अगला कदम समझने में मदद करता है। यह सरकारी पोर्टल नहीं है।"
+            : "HaqPath helps Baiga, Bharia and Sahariya households in Madhya Pradesh understand possible government benefits, see why they may qualify, and know what to do next."}
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link to="/discover" className={primaryLink}>
-            Find possible benefits
+            {hi ? "संभावित सहायता देखें" : "Find possible benefits"}
           </Link>
           <Link to="#how-it-works" className={secondaryLink}>
-            See how it works
+            {hi ? "यह कैसे काम करता है" : "See how it works"}
           </Link>
         </div>
         <figure className={storyFigure}>

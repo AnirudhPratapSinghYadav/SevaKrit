@@ -77,7 +77,7 @@ test("privacy page is reachable", async ({ page }) => {
 
 test("review page is read-only", async ({ page }) => {
   await page.goto("/review");
-  await expect(page.getByText("Editing is disabled in this demo").first()).toBeVisible();
+  await expect(page.getByText("Sign-in is unavailable").first()).toBeVisible();
   await expect(page.locator("main").getByRole("button")).toHaveCount(0);
 });
 

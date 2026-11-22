@@ -202,3 +202,22 @@ Started from `db18866` (matches `origin/main`). PS5 PDF not in the workspace. Na
 - **PARTIAL:** Hindi covers the shell and 404, not every chapter or scheme sentence. Assisted mode reuses the same intake; it is not a separate engine.
 - **Not deployed.** No hosting config or credentials in the repo.
 - Aahar Anudan and dairy remain draft. No new scheme rules invented.
+
+## Checkpoint — production completion push (2026-11-22 evening)
+
+Parent HEAD before this work: `01786be` on `main` (matched origin).
+
+### Implemented this session (code on disk; commit pending if disk recovers)
+- Migrations: `001` neutralized (UUID conflict archived); `002`/`003` grants + conflicting-source publish block + `current_reviewer_role()`.
+- SQL RLS harness `scripts/pg-rls-sql.mjs` against disposable Postgres **16** on port **54432**: migrations applied; anon sees published / not draft; citizen insert denied; publisher publish + audit — **PASS** (full Supabase stack BLOCKED: competing project on 5432x, `postgres-meta` exec-format error, then host **ENOSPC / OOM**).
+- Reviewer: `ReviewSession` real Supabase Auth sign-in when env set; no fake local admin.
+- Assisted: consent → answers → finish/print/reset.
+- Hindi: expanded message catalogue + Home/Intake/Results/shell; glossary + samples routes.
+- Features: ConnectionBadge, SafeSummary copy, conflicting house-word parser, vercel.json SPA + headers, README with mermaid diagrams.
+- Unit: **140/140** PASS + production **build** PASS before disk filled.
+- Playwright / Vercel deploy: **NOT re-run** after disk filled (ENOSPC).
+
+### Honest blockers
+1. Free disk space and stop other Docker Supabase stacks before full `supabase start` + `npm run test:rls` + Playwright + `vercel --prod`.
+2. Hosted Supabase project credentials still required for a live reviewer against the internet.
+3. Do not claim production-ready backend until PostgREST+Auth RLS suite passes on a healthy machine.
