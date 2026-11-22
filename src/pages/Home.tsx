@@ -91,6 +91,12 @@ export default function Home() {
               className="h-full w-full object-cover object-[50%_45%]"
             />
           </figure>
+          <div className="glass-panel float-chip absolute left-2 top-8 z-30 hidden max-w-[11rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink sm:block">
+            {hi ? "नियम + स्रोत दिखते हैं" : "Rules + sources shown"}
+          </div>
+          <div className="glass-panel float-chip-alt absolute bottom-16 left-6 z-30 hidden max-w-[10rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink md:block">
+            {hi ? "आधार / OTP नहीं" : "No Aadhaar / OTP"}
+          </div>
         </div>
       </section>
 

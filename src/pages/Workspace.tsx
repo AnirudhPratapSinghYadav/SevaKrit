@@ -15,10 +15,11 @@ export default function Workspace() {
 
   return (
     <CitizenGate>
-    <section className="flex flex-col gap-8">
-      <header className="flex flex-col gap-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-accent-earth">{t("workspaceEyebrow")}</p>
-        <h1 className="font-display text-4xl font-semibold text-ink">{t("workspaceTitle")}</h1>
+    <section className="relative flex flex-col gap-8">
+      <div className="pointer-events-none absolute -right-8 -top-6 h-36 w-36 rounded-full bg-[radial-gradient(circle,rgba(203,185,124,0.3),transparent_70%)] blur-xl" />
+      <header className="glass-panel relative flex flex-col gap-3 rounded-3xl p-6">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-accent-earth">{t("workspaceEyebrow")}</p>
+        <h1 className="font-display text-4xl font-semibold text-ink md:text-5xl">{t("workspaceTitle")}</h1>
         <p className="max-w-2xl text-lg text-ink-soft">{t("workspaceIntro")}</p>
         <p className="text-sm">
           {user

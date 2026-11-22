@@ -27,7 +27,7 @@
   --page-max: 1280px;
   --content-max: 760px;
   --font-display: "Newsreader", Georgia, serif;
-  --font-body: "Inter", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Source Sans 3", "Noto Sans Devanagari", "Segoe UI", sans-serif;
   --glass: rgba(247, 245, 240, 0.62);
   --glass-strong: rgba(255, 255, 255, 0.72);
   --glass-border: rgba(255, 255, 255, 0.55);
@@ -62,7 +62,7 @@
   --color-body: var(--ink-soft);
   --max-width-page: var(--page-max);
   --max-width-content: var(--content-max);
-  --font-sans: Inter, system-ui, "Segoe UI", "Noto Sans Devanagari", sans-serif;
+  --font-sans: "Source Sans 3", "Noto Sans Devanagari", "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -153,6 +153,18 @@
     animation: float-y-alt 8.5s ease-in-out infinite;
   }
 
+  .float-chip {
+    transform: rotateY(-8deg) rotateX(4deg);
+    animation: float-chip 6.5s ease-in-out infinite;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .float-chip-alt {
+    transform: rotateY(10deg) rotateX(2deg);
+    animation: float-chip-alt 7.5s ease-in-out infinite;
+    box-shadow: var(--shadow-soft);
+  }
+
   .orb {
     position: absolute;
     border-radius: 9999px;
@@ -240,6 +252,26 @@
   }
 }
 
+@keyframes float-chip {
+  0%,
+  100% {
+    transform: rotateY(-8deg) rotateX(4deg) translateY(0);
+  }
+  50% {
+    transform: rotateY(-8deg) rotateX(4deg) translateY(-8px);
+  }
+}
+
+@keyframes float-chip-alt {
+  0%,
+  100% {
+    transform: rotateY(10deg) rotateX(2deg) translateY(0);
+  }
+  50% {
+    transform: rotateY(10deg) rotateX(2deg) translateY(-10px);
+  }
+}
+
 @keyframes pulse-soft {
   0%,
   100% {
@@ -270,6 +302,8 @@
 
   .float-3d,
   .float-3d-alt,
+  .float-chip,
+  .float-chip-alt,
   .orb-a,
   .orb-b,
   .reveal,
