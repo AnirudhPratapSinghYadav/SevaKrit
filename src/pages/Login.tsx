@@ -40,34 +40,34 @@ export default function Login() {
   }
 
   return (
-    <section className="atmosphere relative left-1/2 right-1/2 w-screen max-w-none -translate-x-1/2 overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-[radial-gradient(circle,rgba(212,180,90,0.45),transparent_70%)] blur-2xl" />
-        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(10,42,36,0.35),transparent_70%)] blur-2xl" />
-        <div className="absolute left-1/3 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(168,74,31,0.22),transparent_70%)] blur-3xl" />
+        <div className="absolute -left-24 top-10 h-80 w-80 rounded-full bg-[radial-gradient(circle,rgba(212,180,90,0.5),transparent_70%)] blur-2xl" />
+        <div className="absolute bottom-0 right-0 h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,rgba(23,59,53,0.4),transparent_70%)] blur-2xl" />
+        <div className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(168,74,31,0.28),transparent_70%)] blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid min-h-[calc(100vh-8.5rem)] w-full max-w-page grid-cols-1 items-stretch gap-0 px-4 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10 lg:px-8 lg:py-10">
-        {/* Left: brand story — uses the width */}
-        <aside className="atmosphere-ink relative flex flex-col justify-between overflow-hidden rounded-[2rem] p-8 text-canvas shadow-[0_40px_100px_rgba(6,26,22,0.45)] md:p-12">
-          <div className="pointer-events-none absolute inset-0 bg-[url('/images/story/hero-village.webp')] bg-cover bg-center opacity-[0.18]" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#061a16] via-transparent to-transparent" />
+      {/* Edge-to-edge split — no skinny card column */}
+      <div className="relative grid min-h-[calc(100vh-7.5rem)] w-full grid-cols-1 lg:grid-cols-2">
+        <aside className="atmosphere-ink relative flex min-h-[22rem] flex-col justify-between overflow-hidden p-8 text-canvas md:p-12 lg:min-h-full lg:p-14 xl:p-16">
+          <div className="pointer-events-none absolute inset-0 bg-[url('/images/story/hero-village.webp')] bg-cover bg-center opacity-[0.22]" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#061a16] via-[#173B35]/40% to-transparent" />
           <div className="relative z-10 flex flex-col gap-5">
             <p className="text-sm font-semibold uppercase tracking-[0.28em] text-accent-gold">
               {hi ? "हक़पथ · सेवाकृत" : "HaqPath · SevaKrit"}
             </p>
-            <h1 className="font-display text-4xl font-semibold leading-[1.08] md:text-5xl lg:text-[3.4rem]">
+            <h1 className="max-w-xl font-display text-4xl font-semibold leading-[1.08] md:text-5xl xl:text-[3.5rem]">
               {hi
                 ? "पात्रता का रास्ता, योजना का नाम जाने बिना।"
                 : "Eligibility, without needing the scheme’s name."}
             </h1>
-            <p className="max-w-md text-lg text-canvas/85">
+            <p className="max-w-lg text-lg text-canvas/85 md:text-xl">
               {hi
                 ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए स्रोत-बद्ध संभावित सहायता। सरकारी पोर्टल नहीं।"
                 : "Source-backed likely fits for Baiga, Bharia and Sahariya households in Madhya Pradesh. Not a government portal."}
             </p>
           </div>
-          <ul className="relative z-10 mt-10 grid gap-3 text-sm text-canvas/80 sm:grid-cols-2">
+          <ul className="relative z-10 mt-10 grid gap-3 text-sm text-canvas/85 sm:grid-cols-2">
             <li className="rounded-2xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-sm">
               {hi ? "नियम + स्रोत दिखते हैं" : "Rules and sources on every outcome"}
             </li>
@@ -83,12 +83,11 @@ export default function Login() {
           </ul>
         </aside>
 
-        {/* Right: wide glass plate */}
-        <div className="login-plate relative flex flex-col justify-center gap-6 rounded-[2rem] p-7 md:p-10">
+        <div className="login-plate relative flex flex-col justify-center gap-6 rounded-none border-x-0 border-b-0 border-t border-white/30 p-8 md:p-12 lg:border-l lg:border-t-0 lg:p-14 xl:px-16">
           <header className="flex flex-col gap-2">
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-accent-earth">{t("brand")}</p>
-            <h2 className="font-display text-3xl font-semibold text-ink md:text-4xl">{t("loginTitle")}</h2>
-            <p className="max-w-lg text-base text-ink-soft md:text-lg">{t("loginIntro")}</p>
+            <h2 className="font-display text-3xl font-semibold text-ink md:text-4xl xl:text-5xl">{t("loginTitle")}</h2>
+            <p className="max-w-xl text-base text-ink-soft md:text-lg">{t("loginIntro")}</p>
           </header>
 
           {!configured && (
@@ -97,7 +96,7 @@ export default function Login() {
             </p>
           )}
 
-          <form onSubmit={onSubmit} className="flex w-full flex-col gap-3">
+          <form onSubmit={onSubmit} className="grid w-full max-w-xl grid-cols-1 gap-3">
             {mode === "up" && (
               <>
                 <label htmlFor="login-name" className="font-semibold text-ink">
@@ -145,7 +144,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => setMode((current) => (current === "in" ? "up" : "in"))}
-              className="min-h-11 text-sm font-semibold text-accent-earth underline-offset-4 hover:underline"
+              className="min-h-11 text-left text-sm font-semibold text-accent-earth underline-offset-4 hover:underline"
             >
               {mode === "in" ? t("loginNeedAccount") : t("loginHaveAccount")}
             </button>
@@ -156,7 +155,7 @@ export default function Login() {
             )}
           </form>
 
-          <div className="flex flex-col gap-3 border-t border-border/60 pt-5 sm:flex-row sm:items-center">
+          <div className="flex max-w-xl flex-col gap-3 border-t border-border/60 pt-5 sm:flex-row sm:items-center">
             <button
               type="button"
               onClick={() => {

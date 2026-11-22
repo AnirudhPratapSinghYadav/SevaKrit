@@ -3,7 +3,7 @@ export type Lang = "en" | "hi";
 export const MESSAGES = {
   en: {
     brand: "HaqPath",
-    tagline: "by SevaKrit · Independent guide, not a government portal",
+    tagline: "by SevaKrit · Independent guide — not a government portal",
     navDiscover: "Describe household",
     navResults: "Results",
     navPlan: "Plan",
@@ -152,7 +152,7 @@ export const MESSAGES = {
     loginSignOut: "Sign out",
     loginNeedAccount: "Need an account? Create one",
     loginHaveAccount: "Already have an account? Sign in",
-    loginGuest: "Start as guest",
+    loginGuest: "Continue as guest",
     loginCheckEmail: "Confirm email if required, then continue.",
     workspaceEyebrow: "Workspace",
     workspaceTitle: "Start from what you know.",
@@ -330,7 +330,7 @@ export const MESSAGES = {
     loginSignOut: "साइन आउट",
     loginNeedAccount: "खाता चाहिए? बनाएँ",
     loginHaveAccount: "पहले से खाता है? साइन इन",
-    loginGuest: "अतिथि से शुरू करें",
+    loginGuest: "अतिथि के रूप में जारी रखें",
     loginCheckEmail: "यदि पुष्टि चाहिए तो ईमेल जाँचें, फिर आगे बढ़ें।",
     workspaceEyebrow: "कार्यक्षेत्र",
     workspaceTitle: "जो जानते हैं, वहीं से शुरू करें।",

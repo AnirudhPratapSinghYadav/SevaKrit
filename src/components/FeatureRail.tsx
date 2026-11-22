@@ -1,36 +1,32 @@
+import type { CSSProperties } from "react";
 import { NavLink } from "react-router-dom";
 import { useLanguage } from "../i18n/Language";
 
 const TOOLS = [
-  { to: "/tools/compass", key: "toolCompass" as const },
-  { to: "/tools/pocket", key: "toolPocket" as const },
-  { to: "/tools/resolve", key: "toolResolve" as const },
-  { to: "/tools/watch", key: "toolWatch" as const },
-  { to: "/tools/route", key: "toolRoute" as const },
+  { to: "/tools/compass", key: "toolCompass" as const, hintEn: "What-if", hintHi: "क्या-अगर" },
+  { to: "/tools/pocket", key: "toolPocket" as const, hintEn: "Card", hintHi: "कार्ड" },
+  { to: "/tools/resolve", key: "toolResolve" as const, hintEn: "Unstick", hintHi: "अटकाव" },
+  { to: "/tools/watch", key: "toolWatch" as const, hintEn: "Versions", hintHi: "संस्करण" },
+  { to: "/tools/route", key: "toolRoute" as const, hintEn: "Visit", hintHi: "भेंट" },
 ];
 
-/** Compact rail so the five innovations sit inside the citizen journey, not a separate dashboard. */
+/** Glass command dock for the five Haq tools inside the citizen journey. */
 export default function FeatureRail() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
+  const hi = lang === "hi";
+
   return (
-    <nav
-      aria-label={t("toolsNav")}
-      className="glass-panel flex flex-wrap gap-2 rounded-2xl px-3 py-3"
-    >
+    <nav aria-label={t("toolsNav")} className="tool-dock tool-dock-compact">
       <p className="basis-full text-sm font-semibold text-ink">{t("toolsNav")}</p>
-      {TOOLS.map((tool) => (
+      {TOOLS.map((tool, index) => (
         <NavLink
           key={tool.to}
           to={tool.to}
-          className={({ isActive }) =>
-            `inline-flex min-h-11 items-center rounded-full px-3 text-sm font-semibold underline-offset-4 transition ${
-              isActive
-                ? "bg-ink text-canvas shadow-[0_8px_24px_rgba(23,59,53,0.2)]"
-                : "border border-border/70 bg-surface/70 text-ink hover:-translate-y-0.5 hover:underline"
-            }`
-          }
+          style={{ "--i": index } as CSSProperties}
+          className={({ isActive }) => `tool-dock-item ${isActive ? "tool-dock-item-active" : ""}`}
         >
-          {t(tool.key)}
+          <span className="font-display text-base font-semibold text-ink">{t(tool.key)}</span>
+          <span className="text-xs text-ink-soft">{hi ? tool.hintHi : tool.hintEn}</span>
         </NavLink>
       ))}
     </nav>

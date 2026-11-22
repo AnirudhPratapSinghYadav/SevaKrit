@@ -7,7 +7,6 @@ export default function AppShell() {
   const { user, isGuest } = useAuth();
   const { pathname } = useLocation();
   const isImmersive = pathname === "/" || pathname === "/login" || pathname === "/workspace";
-  const isLanding = pathname === "/";
   const navItems = [
     { to: "/workspace", label: t("navWorkspace") },
     { to: "/discover", label: t("navDiscover") },
@@ -20,7 +19,7 @@ export default function AppShell() {
   return (
     <div className={`flex min-h-screen flex-col text-body ${isImmersive ? "atmosphere" : "bg-canvas"}`}>
       <header className="glass-nav sticky top-0 z-30">
-        <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-3 lg:px-8">
+        <div className="mx-auto flex w-full flex-col gap-2 px-4 py-3 lg:px-8 xl:px-10">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex flex-col">
               <Link
@@ -87,13 +86,13 @@ export default function AppShell() {
         className={
           isImmersive
             ? "immersive-main w-full flex-1 outline-none"
-            : "mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none md:max-w-content"
+            : "mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none lg:px-8"
         }
       >
         <Outlet />
       </main>
 
-      {!isLanding && (
+      {!isImmersive && (
         <footer className="border-t border-border/70 bg-surface-muted/80 backdrop-blur-md">
           <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-5 text-sm lg:px-8">
             <p>{t("footer")}</p>

@@ -1,22 +1,33 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../i18n/Language";
+import { usePointerTilt } from "../hooks/usePointerTilt";
+import { useScrollReveal } from "../hooks/useScrollReveal";
 
 const tools = [
-  { to: "/tools/compass", en: "HaqCompass", hi: "हक़कम्पास", blurbEn: "What-if eligibility", blurbHi: "क्या-अगर पात्रता" },
-  { to: "/tools/pocket", en: "HaqPocket", hi: "हक़पॉकेट", blurbEn: "Printable public card", blurbHi: "प्रिंट योग्य कार्ड" },
-  { to: "/tools/resolve", en: "HaqResolve", hi: "हक़रिज़ॉल्व", blurbEn: "Stuck? Next steps", blurbHi: "अटके? अगला कदम" },
-  { to: "/tools/watch", en: "HaqWatch", hi: "हक़वॉच", blurbEn: "Rule-version check", blurbHi: "नियम संस्करण जाँच" },
-  { to: "/tools/route", en: "SevaRoute", hi: "सेवारूट", blurbEn: "Visit preparation", blurbHi: "भेंट की तैयारी" },
+  { to: "/tools/compass", en: "HaqCompass", hi: "हक़कम्पास", blurbEn: "What-if fit", blurbHi: "क्या-अगर पात्रता" },
+  { to: "/tools/pocket", en: "HaqPocket", hi: "हक़पॉकेट", blurbEn: "Printable card", blurbHi: "प्रिंट कार्ड" },
+  { to: "/tools/resolve", en: "HaqResolve", hi: "हक़रिज़ॉल्व", blurbEn: "Unstick next step", blurbHi: "अटकाव तोड़ें" },
+  { to: "/tools/watch", en: "HaqWatch", hi: "हक़वॉच", blurbEn: "Rule versions", blurbHi: "नियम संस्करण" },
+  { to: "/tools/route", en: "SevaRoute", hi: "सेवारूट", blurbEn: "Visit prep", blurbHi: "भेंट तैयारी" },
+] as const;
+
+const outcomes = [
+  { en: "Likely eligible", hi: "संभावित योग्यता", tone: "success" as const },
+  { en: "Needs more information", hi: "अधिक जानकारी चाहिए", tone: "warn" as const },
+  { en: "Likely not eligible", hi: "संभावित असंगति", tone: "muted" as const },
+  { en: "Source under review", hi: "स्रोत समीक्षाधीन", tone: "info" as const },
 ] as const;
 
 export default function Home() {
   const { lang } = useLanguage();
   const hi = lang === "hi";
+  const tilt = usePointerTilt(9);
+  useScrollReveal();
 
   return (
     <div className="relative overflow-x-clip">
-      {/* Full-viewport cinematic hero — edge-to-edge image plane */}
+      {/* A) Full-viewport cinematic hero */}
       <section className="relative left-1/2 right-1/2 flex min-h-[100svh] w-screen -translate-x-1/2 items-end overflow-hidden">
         <img
           src="/images/story/hero-village.webp"
@@ -26,7 +37,7 @@ export default function Home() {
           aria-hidden="true"
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-[50%_42%]"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_42%] parallax-hero"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#061a16]/96% via-[#0a2a24]/82% to-[#0a2a24]/35%" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#061a16] via-transparent to-[#061a16]/40%" />
@@ -36,24 +47,24 @@ export default function Home() {
         <div className="relative z-10 mx-auto grid w-full max-w-page grid-cols-1 items-end gap-10 px-4 pb-16 pt-28 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-20">
           <div className="flex flex-col gap-6 text-canvas">
             <p className="reveal text-sm font-semibold uppercase tracking-[0.28em] text-accent-gold">
-              {hi ? "हक़पथ" : "HaqPath"}
+              {hi ? "हक़पथ · सेवाकृत" : "HaqPath · SevaKrit"}
             </p>
             <h1 className="reveal reveal-delay-1 font-display text-[2.75rem] font-semibold leading-[1.05] md:text-6xl lg:text-[4.25rem]">
               {hi
-                ? "योजना का नाम जाने बिना भी आगे का रास्ता।"
-                : "A path forward without knowing the scheme’s name."}
+                ? "किसी योजना का नाम जाने बिना भी आगे का रास्ता मिलना चाहिए।"
+                : "You shouldn't need to know a scheme's name to find a way forward."}
             </h1>
             <p className="reveal reveal-delay-2 max-w-xl text-lg text-canvas/85 md:text-xl">
               {hi
-                ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए स्रोत-बद्ध संभावित सहायता और अगला व्यावहारिक कदम। सरकारी पोर्टल नहीं।"
-                : "Source-backed likely fits and a practical next step for Baiga, Bharia and Sahariya households in Madhya Pradesh. Not a government portal."}
+                ? "मध्य प्रदेश के बैगा, भारिया, सहरिया परिवारों के लिए: संभावित सहायता, नियम-साक्ष्य, अगला ठोस कदम। सरकारी पोर्टल नहीं।"
+                : "For Baiga, Bharia and Sahariya households in Madhya Pradesh: possible benefits, rule evidence, a concrete next step. Not a government portal."}
             </p>
             <div className="reveal reveal-delay-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 to="/discover"
-                className="btn-gold inline-flex min-h-12 items-center justify-center rounded-full px-8 font-semibold"
+                className="btn-gold magnetic-cta inline-flex min-h-12 items-center justify-center rounded-full px-8 font-semibold"
               >
-                {hi ? "संभावित सहायता देखें" : "Find likely fits"}
+                {hi ? "संभावित सहायता देखें" : "Find possible benefits"}
               </Link>
               <Link
                 to="/workspace"
@@ -65,18 +76,21 @@ export default function Home() {
                 to="#story"
                 className="inline-flex min-h-12 items-center justify-center px-3 font-semibold text-accent-gold underline-offset-4 hover:underline"
               >
-                {hi ? "कहानी" : "Read the story"}
+                {hi ? "कैसे काम करता है" : "How it works"}
               </Link>
             </div>
             <p className="reveal reveal-delay-4 text-sm text-canvas/65">
-              {hi
-                ? "परिणाम “संभावित” हैं। अंतिम निर्णय विभाग का।"
-                : "Outcomes say likely. The department still decides."}
+              {hi ? "परिणाम “संभावित” हैं। अंतिम निर्णय विभाग का।" : "Outcomes say likely. Departments decide."}
             </p>
           </div>
 
-          <div className="hero-stage relative hidden min-h-[20rem] lg:block">
-            <figure className="float-3d story-frame absolute right-0 top-0 aspect-[4/3] w-[78%]">
+          <div
+            ref={tilt.ref}
+            onPointerMove={tilt.onPointerMove}
+            onPointerLeave={tilt.onPointerLeave}
+            className="hero-stage tilt-stage relative hidden min-h-[20rem] lg:block"
+          >
+            <figure className="float-3d story-frame tilt-layer absolute right-0 top-0 aspect-[4/3] w-[78%]">
               <img
                 src="/images/story/household-story.webp"
                 width={640}
@@ -97,37 +111,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Chapter scroll narrative */}
-      <div id="story" className="mx-auto w-full max-w-page px-4 pb-20 lg:px-6">
-        <div className="chapter-rail flex flex-col gap-16 pl-6 md:pl-10">
-          <Chapter n={hi ? "२" : "2"} title={hi ? "अदृश्य समस्या" : "The unseen problem"}>
+      <div id="story" className="mx-auto w-full max-w-page px-4 pb-24 lg:px-6">
+        <div className="chapter-rail flex flex-col gap-20 pl-6 md:pl-10">
+          <Chapter n={hi ? "२" : "2"} title={hi ? "अदृश्य समस्या" : "Rules hide from families"}>
             <p>
               {hi
-                ? "पात्रता नियम अक्सर अधिकारियों के लिए लिखे जाते हैं। श्रेणी, ज़िला, आवास — हर प्रपत्र पर अलग भाषा। नियम बदलते हैं; दस्तावेज़ कार्यालय-दर-कार्यालय भिन्न हो सकते हैं।"
-                : "Eligibility rules are written for officers, not families. Category, district, housing — each form speaks a different language. Rules change; documents differ office to office."}
+                ? "पात्रता भाषा अधिकारियों के लिए लिखी जाती है। श्रेणी, ज़िला, आवास: हर प्रपत्र अलग। नियम बदलते हैं; कागज़ कार्यालय-दर-कार्यालय भिन्न।"
+                : "Eligibility language is written for officers. Category, district, housing: each form differs. Rules move. Papers change office to office."}
             </p>
           </Chapter>
 
-          <Chapter n={hi ? "३" : "3"} title={hi ? "एक परिवार की कहानी" : "One household's story"}>
+          <Chapter n={hi ? "३" : "3"} title={hi ? "एक परिवार" : "One household"}>
             <p className="mb-4 inline-flex rounded-full bg-sage px-3 py-1 text-sm font-semibold text-ink">
               {hi ? "काल्पनिक उदाहरण" : "Fictional example"}
             </p>
             <div className="grid gap-4 md:grid-cols-2">
               <div className="glass-panel rounded-2xl p-5">
-                <h3 className="mb-2 font-semibold text-ink">{hi ? "परिवार क्या कहता है" : "What they say"}</h3>
+                <h3 className="mb-2 font-semibold text-ink">{hi ? "वे क्या कहते हैं" : "What they say"}</h3>
                 <p>
                   {hi
-                    ? "गाँव में बच्चा और दादा-दादी के साथ छोटा खेत। सहायता की खबर है, पर कौन-सी योजना लागू होती है और कौन से कागज़ ले जाएँ — स्पष्ट नहीं।"
-                    : "A village household with a child and elders, a small plot, and rumours of help — but not which scheme applies, or which papers to bring."}
+                    ? "गाँव में बच्चा और दादा-दादी, छोटा खेत। सहायता की खबर है. कौन सी योजना, कौन से कागज़, स्पष्ट नहीं।"
+                    : "Village household, child and elders, small plot. Rumours of help: not which scheme, not which papers."}
                 </p>
               </div>
               <div className="glass-panel rounded-2xl p-5">
-                <h3 className="mb-2 font-semibold text-ink">{hi ? "क्या जानना ज़रूरी है" : "What matters"}</h3>
+                <h3 className="mb-2 font-semibold text-ink">{hi ? "क्या मायने रखता है" : "What matters"}</h3>
                 <ul className="list-disc space-y-1 pl-5">
                   <li>{hi ? "राज्य और ज़िला" : "State and district"}</li>
-                  <li>{hi ? "जनजातीय समूह" : "Tribal group, as described"}</li>
+                  <li>{hi ? "जनजातीय समूह" : "Tribal group"}</li>
                   <li>{hi ? "मकान का प्रकार" : "House type"}</li>
-                  <li>{hi ? "सरकारी कर्मचारी?" : "Any government employee?"}</li>
+                  <li>{hi ? "सरकारी कर्मचारी?" : "Government employee?"}</li>
                 </ul>
               </div>
             </div>
@@ -144,36 +157,42 @@ export default function Home() {
             </figure>
           </Chapter>
 
-          <Chapter n={hi ? "४" : "4"} title={hi ? "समझदार प्रश्न" : "Only questions that matter"}>
+          <Chapter n={hi ? "४" : "4"} title={hi ? "केवल निर्णायक प्रश्न" : "Only questions that change outcomes"}>
             <p>
               {hi
-                ? "हक़पथ केवल वे प्रश्न पूछता है जो परिणाम बदल सकते हैं — हर प्रश्न के साथ कारण।"
-                : "HaqPath asks only questions that can change the outcome — each with a short “why we ask”."}
+                ? "हक़पथ वही प्रश्न पूछता है जो परिणाम बदल सकते हैं. हर प्रश्न के साथ कारण।"
+                : "HaqPath asks only questions that can change the result. Each with a short why."}
             </p>
-            <Link to="/discover" className="btn-primary-glow mt-4 inline-flex min-h-11 items-center rounded-full px-6 font-semibold text-canvas">
+            <Link to="/discover" className="btn-primary-glow magnetic-cta mt-4 inline-flex min-h-11 items-center rounded-full px-6 font-semibold text-canvas">
               {hi ? "प्रश्न आज़माएँ" : "Try the questions"}
             </Link>
           </Chapter>
 
-          <Chapter n={hi ? "५" : "5"} title={hi ? "समझ आने वाले परिणाम" : "Explainable results"}>
-            <ul className="grid gap-3 sm:grid-cols-2">
-              {(hi
-                ? ["संभावित योग्यता", "अधिक जानकारी चाहिए", "संभावित असंगति", "स्रोत समीक्षाधीन"]
-                : ["Likely eligible", "Needs more information", "Likely not eligible", "Source under review"]
-              ).map((label) => (
-                <li key={label} className="glass-panel rounded-2xl px-4 py-3 font-semibold text-ink">
-                  {label}
-                </li>
+          {/* B) Outcome constellation */}
+          <Chapter n={hi ? "५" : "5"} title={hi ? "परिणाम नक्षत्र" : "Outcome constellation"}>
+            <div className="constellation">
+              {outcomes.map((item, index) => (
+                <button
+                  key={item.en}
+                  type="button"
+                  className={`constellation-node tone-${item.tone}`}
+                  style={{ "--i": index } as CSSProperties}
+                >
+                  {hi ? item.hi : item.en}
+                </button>
               ))}
-            </ul>
+              <div className="constellation-core glass-panel" aria-hidden>
+                <span>{hi ? "साक्ष्य" : "Evidence"}</span>
+              </div>
+            </div>
           </Chapter>
 
-          <Chapter n={hi ? "६" : "6"} title={hi ? "तैयारी तक" : "From fit to readiness"}>
+          <Chapter n={hi ? "६" : "6"} title={hi ? "पात्रता से तैयारी" : "Fit to readiness"}>
             <div className="grid items-center gap-6 md:grid-cols-2">
               <p>
                 {hi
-                  ? "दस्तावेज़ सूची, क्रमबद्ध कदम, प्रगति और प्रिंट — सब आपके पुष्ट उत्तरों से।"
-                  : "Document lists, ordered steps, progress and print — built from your confirmed answers."}
+                  ? "दस्तावेज़ सूची, क्रमबद्ध कदम, प्रगति, प्रिंट: आपके पुष्ट उत्तरों से।"
+                  : "Document lists, ordered steps, progress, print: from your confirmed answers."}
               </p>
               <figure className="story-frame aspect-[3/2]">
                 <img
@@ -192,11 +211,11 @@ export default function Home() {
             </Link>
           </Chapter>
 
-          <Chapter n={hi ? "७" : "7"} title={hi ? "साक्ष्य और विश्वास" : "Evidence you can check"}>
+          <Chapter n={hi ? "७" : "7"} title={hi ? "जाँच योग्य साक्ष्य" : "Evidence you can check"}>
             <p>
               {hi
-                ? "हर नियम संस्करण, आधिकारिक स्रोत और सत्यापन तिथि के साथ। असत्यापित स्रोत पर आत्मविश्वास नहीं।"
-                : "Every rule carries a version, official source and verification date. Unverified sources never look confident."}
+                ? "हर नियम: संस्करण, आधिकारिक स्रोत, सत्यापन तिथि। असत्यापित स्रोत पर आत्मविश्वास नहीं।"
+                : "Every rule: version, official source, verification date. Unverified sources never look confident."}
             </p>
           </Chapter>
 
@@ -216,8 +235,8 @@ export default function Home() {
               <div className="order-1 md:order-2">
                 <p>
                   {hi
-                    ? "स्वयंसेवक परिवार के साथ बैठकर उसी उपकरण का उपयोग कर सकता है — सहमति पहले।"
-                    : "A volunteer can sit with a household and use the same tool — consent first."}
+                    ? "स्वयंसेवक परिवार के साथ बैठकर उसी उपकरण का उपयोग कर सकता है। सहमति पहले।"
+                    : "A volunteer can sit with the household and use the same tool. Consent first."}
                 </p>
                 <Link to="/assisted" className="btn-primary-glow mt-4 inline-flex min-h-11 items-center rounded-full px-6 font-semibold text-canvas">
                   {hi ? "सहायता मोड" : "Assisted mode"}
@@ -226,50 +245,44 @@ export default function Home() {
             </div>
           </Chapter>
 
-          <Chapter n={hi ? "९" : "9"} title={hi ? "पाँच उपकरण, एक यात्रा" : "Five tools, one journey"}>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {tools.map((tool) => (
+          {/* C) Glass tool command dock */}
+          <Chapter n={hi ? "९" : "9"} title={hi ? "पाँच उपकरण" : "Five tools, one journey"}>
+            <nav className="tool-dock" aria-label={hi ? "हक़पथ उपकरण" : "HaqPath tools"}>
+              {tools.map((tool, index) => (
                 <Link
                   key={tool.to}
                   to={tool.to}
-                  className="glass-panel group rounded-2xl p-4 transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(23,59,53,0.14)]"
+                  className="tool-dock-item"
+                  style={{ "--i": index } as CSSProperties}
                 >
-                  <p className="font-display text-xl font-semibold text-ink">{hi ? tool.hi : tool.en}</p>
-                  <p className="text-sm text-ink-soft">{hi ? tool.blurbHi : tool.blurbEn}</p>
+                  <span className="font-display text-lg font-semibold text-ink">{hi ? tool.hi : tool.en}</span>
+                  <span className="text-sm text-ink-soft">{hi ? tool.blurbHi : tool.blurbEn}</span>
                 </Link>
               ))}
-            </div>
+            </nav>
           </Chapter>
         </div>
 
-        <section className="relative mt-20 overflow-hidden rounded-[2rem] border border-white/40 bg-ink px-6 py-14 text-canvas shadow-[0_40px_100px_rgba(23,59,53,0.35)] md:px-12">
-          <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(203,185,124,0.45),transparent_70%)]" />
+        <section className="relative mt-24 overflow-hidden rounded-[2rem] border border-white/40 bg-ink px-6 py-14 text-canvas shadow-[0_40px_100px_rgba(23,59,53,0.35)] md:px-12" data-reveal>
+          <div className="pointer-events-none absolute right-0 top-0 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(203,185,124,0.45),transparent_70%)]" />
           <h2 className="font-display text-3xl font-semibold md:text-5xl">
             {hi ? "जो जानते हैं, वहीं से शुरू करें।" : "Start with what you know."}
           </h2>
           <p className="mt-4 max-w-2xl text-lg text-canvas/85">
-            {hi
-              ? "योजना का नाम ज़रूरी नहीं। परिवार को सादे शब्दों में बताएँ।"
-              : "You do not need a scheme name. Describe the household in plain words."}
+            {hi ? "योजना का नाम ज़रूरी नहीं। परिवार को सादे शब्दों में बताएँ।" : "No scheme name required. Describe the household in plain words."}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/discover"
-              className="inline-flex min-h-12 items-center rounded-full bg-canvas px-7 font-semibold text-ink"
-            >
+            <Link to="/discover" className="magnetic-cta inline-flex min-h-12 items-center rounded-full bg-canvas px-7 font-semibold text-ink">
               {hi ? "अभी शुरू करें" : "Start now"}
             </Link>
-            <Link
-              to="/login"
-              className="inline-flex min-h-12 items-center rounded-full border border-canvas/40 px-7 font-semibold text-canvas"
-            >
+            <Link to="/login" className="inline-flex min-h-12 items-center rounded-full border border-canvas/40 px-7 font-semibold text-canvas">
               {hi ? "साइन इन / अतिथि" : "Sign in / Guest"}
             </Link>
           </div>
           <p className="mt-6 text-sm text-canvas/70">
             {hi
-              ? "स्वतंत्र तैयारी उपकरण — सरकारी वेबसाइट या आवेदन सेवा नहीं।"
-              : "Independent readiness tool — not a government website or application service."}
+              ? "स्वतंत्र तैयारी उपकरण। सरकारी वेबसाइट या आवेदन सेवा नहीं।"
+              : "Independent readiness tool. Not a government site or application service."}
           </p>
           <p className="mt-3">
             <Link to="/privacy" className="text-sm font-semibold text-accent-gold underline underline-offset-4">
@@ -284,7 +297,7 @@ export default function Home() {
 
 function Chapter({ n, title, children }: { n: string; title: string; children: ReactNode }) {
   return (
-    <section className="relative flex flex-col gap-4">
+    <section className="relative flex flex-col gap-4" data-reveal>
       <div className="absolute -left-6 top-1 flex h-8 w-8 items-center justify-center rounded-full bg-ink text-sm font-semibold text-canvas md:-left-10">
         {n}
       </div>
