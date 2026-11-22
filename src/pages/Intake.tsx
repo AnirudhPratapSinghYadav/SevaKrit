@@ -107,14 +107,18 @@ export default function Intake() {
         <section className="flex flex-col gap-3">
           <h2 className="text-xl font-semibold text-ink">Follow-up questions</h2>
           {questions.length === 0 ? (
-            <p>No further questions yet. Official rules are still being verified.</p>
+            <p>No further questions for the published rules with your confirmed details.</p>
           ) : (
             questions.map((question) => (
               <FollowUpQuestion
                 key={question.factKey}
                 factKey={question.factKey}
                 reason={question.reason}
-                answered={followUpAnswers[question.factKey]}
+                answered={
+                  followUpAnswers[question.factKey] !== undefined
+                    ? String(followUpAnswers[question.factKey])
+                    : undefined
+                }
                 onAnswer={answerFollowUp}
               />
             ))

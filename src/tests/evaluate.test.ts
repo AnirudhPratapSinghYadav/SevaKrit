@@ -191,12 +191,34 @@ describe("evaluateScheme: source checks", () => {
     expect(result.outcome).toBe("source_review_needed");
   });
 
-  it("keeps a mismatch as a mismatch even when another source is in review", () => {
+  it("keeps a mismatch when a verified rule fails even if another rule's source is in review", () => {
     const rules = [
       rule("a", FACT.size, "at_most", 5, { sourceId: unverifiedSource.id }),
       rule("b", FACT.income, "at_most", 300000),
     ];
     expect(evaluate(rules, withFacts({ [FACT.income]: 300001 })).outcome).toBe("likely_mismatch");
+  });
+
+  it("does not treat a failed condition as mismatch when that rule's source is unverified", () => {
+    const rules = [rule("a", FACT.size, "at_most", 5, { sourceId: unverifiedSource.id })];
+    const result = evaluate(rules, withFacts({ [FACT.size]: 99 }));
+    expect(result.outcome).toBe("source_review_needed");
+    expect(result.failed).toEqual([]);
+  });
+
+  it("does not treat a failed condition as mismatch when that rule's source is stale", () => {
+    const rules = [rule("a", FACT.size, "at_most", 5, { sourceId: staleSource.id })];
+    const result = evaluate(rules, withFacts({ [FACT.size]: 99 }));
+    expect(result.outcome).toBe("source_review_needed");
+    expect(result.failed).toEqual([]);
+  });
+
+  it("does not treat a failed condition as mismatch when that rule's source is conflicting", () => {
+    const conflicting = { ...unverifiedSource, id: "src-conflict", status: "conflicting" as const };
+    const rules = [rule("a", FACT.size, "at_most", 5, { sourceId: conflicting.id })];
+    const result = evaluate(rules, withFacts({ [FACT.size]: 99 }), [conflicting]);
+    expect(result.outcome).toBe("source_review_needed");
+    expect(result.failed).toEqual([]);
   });
 
   it("lists the rules' source ids on the assessment", () => {

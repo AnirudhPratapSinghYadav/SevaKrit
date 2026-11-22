@@ -18,12 +18,47 @@ test("fresh browser: typed intake shows proposals and confirmation", async ({ pa
   await expect(page.getByText("Confirmed details").first()).toBeVisible();
 });
 
-test("results and plan show honest empty state", async ({ page }) => {
+test("results show published PM-JANMAN housing with needs-information when facts incomplete", async ({ page }) => {
   await page.goto("/results");
-  await expect(page.getByText("No scheme is confirmed yet").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Results" })).toBeVisible();
+  await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
+  await expect(page.getByText("Needs information").first()).toBeVisible();
+  await expect(page.getByText("No scheme is confirmed yet")).toHaveCount(0);
 
   await page.goto("/plan");
-  await expect(page.getByText("No scheme is confirmed yet").first()).toBeVisible();
+  await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
+});
+
+test("citizen path: confirm sample facts, answer follow-ups, see likely fit", async ({ page }) => {
+  await page.goto("/intake");
+  await page.getByRole("button", { name: "Use the example" }).click();
+  await page.getByRole("button", { name: "Read my description" }).click();
+  await expect(page.getByText("Not confirmed yet").first()).toBeVisible();
+
+  const confirms = page.getByRole("button", { name: "Confirm" });
+  const count = await confirms.count();
+  for (let i = 0; i < count; i += 1) {
+    await page.getByRole("button", { name: "Confirm" }).first().click();
+  }
+
+  await expect(page.getByText("Follow-up questions")).toBeVisible();
+  // Answer remaining published-rule facts with typed values.
+  const govt = page.getByLabel(/government employee/i);
+  if (await govt.count()) {
+    await govt.fill("No");
+    await page.getByRole("button", { name: "Confirm answer" }).first().click();
+  }
+  const settlement = page.getByLabel(/rural or urban/i);
+  if (await settlement.count()) {
+    await settlement.fill("rural");
+    await page.getByRole("button", { name: "Confirm answer" }).first().click();
+  }
+
+  await page.getByRole("link", { name: "See results" }).click();
+  await expect(page.getByText("Likely fit").first()).toBeVisible();
+  await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
+  await page.getByText("Rule trace").first().click();
+  await expect(page.getByText(/Met:/).first()).toBeVisible();
 });
 
 test("privacy page is reachable", async ({ page }) => {

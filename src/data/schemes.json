@@ -27,15 +27,26 @@
   },
   {
     "id": "pm-janman-housing-mp",
-    "title": { "en": "PM JANMAN housing (Madhya Pradesh)" },
-    "department": "to be verified",
+    "title": {
+      "en": "PM-JANMAN rural housing (Madhya Pradesh)",
+      "hi": "प्रधानमंत्री जनजाति आदिवासी न्याय महा अभियान (आवास योजना-ग्रामीण)"
+    },
+    "department": "Panchayat and Rural Development Department (MP CM Helpline listing)",
     "beneficiaryScope": "household",
-    "applicationChannel": "to be verified from official source",
-    "steps": [],
-    "documents": [],
+    "applicationChannel": "Gram Panchayat; official online link listed as pmayg.nic.in",
+    "steps": [
+      "Contact the Gram Panchayat for this scheme.",
+      "Application proceeds after the Awas+ list is approved by the Gram Sabha (per CM Helpline listing).",
+      "Designated officer: Chief Executive Officer, Janpad Panchayat.",
+      "Appeal route listed: District Appellate Committee.",
+      "Final selection and payment decisions belong to the department — this app does not approve benefits."
+    ],
+    "documents": [
+      "Document list is not stated on the CM Helpline scheme page used for verification — confirm at the Gram Panchayat / official portal."
+    ],
     "deadline": null,
-    "sourceIds": ["pm-janman-housing-mp", "pm-janman-union"],
-    "status": "draft",
-    "lastVerified": null
+    "sourceIds": ["pm-janman-housing-mp"],
+    "status": "published",
+    "lastVerified": "2026-11-22"
   }
 ]

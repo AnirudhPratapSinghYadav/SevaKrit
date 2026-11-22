@@ -1,85 +1,33 @@
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AppShell from "./components/AppShell";
 import { AppStateProvider } from "./context/AppState";
+import Home from "./pages/Home";
 import Intake from "./pages/Intake";
 import Plan from "./pages/Plan";
 import Privacy from "./pages/Privacy";
 import Results from "./pages/Results";
 import Review from "./pages/Review";
 
-function Home() {
-  return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-3xl font-semibold text-ink">HaqPath</h1>
-      <p className="mt-4">
-        Independent, plain-language help for households to understand benefits, documents and next
-        steps. Not a government portal.
-      </p>
-      <p className="mt-4 text-terracotta-text">
-        Scheme information is draft and not yet verified against official sources.
-      </p>
-      <p className="mt-6">
-        <Link to="/intake" className="font-semibold text-ink underline underline-offset-4">
-          Describe your household
-        </Link>
-      </p>
-    </main>
-  );
-}
-
 export default function App() {
   return (
     <AppStateProvider>
       <BrowserRouter>
+        <a
+          href="#main-content"
+          className="skip-link"
+        >
+          Skip to main content
+        </a>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route
-            path="/intake"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <Intake />
-              </main>
-            }
-          />
-          <Route
-            path="/results"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <Results />
-              </main>
-            }
-          />
-          <Route
-            path="/plan"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <Plan />
-              </main>
-            }
-          />
-          <Route
-            path="/privacy"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <Privacy />
-              </main>
-            }
-          />
-          <Route
-            path="/review"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <Review />
-              </main>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <main className="mx-auto max-w-2xl px-4 py-10">
-                <p>Page not found.</p>
-              </main>
-            }
-          />
+          <Route element={<AppShell />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/intake" element={<Intake />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/plan" element={<Plan />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/review" element={<Review />} />
+            <Route path="*" element={<p>Page not found.</p>} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AppStateProvider>

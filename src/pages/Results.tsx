@@ -63,6 +63,7 @@ export default function Results() {
               items.map(({ scheme, detail }) => (
                 <article key={scheme.id} className="flex flex-col gap-2 rounded-md border border-sage p-4">
                   <h3 className="font-semibold text-ink">{scheme.title.en}</h3>
+                  <p className="text-sm">{scheme.department}</p>
                   {detail.assessment.sourceIds.map((sourceId) => {
                     const source = sources.find((item) => item.id === sourceId);
                     return source ? (
@@ -78,7 +79,18 @@ export default function Results() {
                       </p>
                     );
                   })}
+                  {detail.notes.length > 0 && (
+                    <ul className="text-sm">
+                      {detail.notes.map((note) => (
+                        <li key={note}>{note}</li>
+                      ))}
+                    </ul>
+                  )}
                   <RuleTrace results={detail.results} />
+                  <p className="text-sm">
+                    Next: review the plan steps for this scheme. Local Gram Sabha / Awas+ confirmation is still
+                    required by the official process and is not decided here.
+                  </p>
                 </article>
               ))
             )}

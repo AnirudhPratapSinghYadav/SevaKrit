@@ -1,27 +1,93 @@
 @import "tailwindcss";
 
+:root {
+  --canvas: #F7F5F0;
+  --surface: #FFFFFF;
+  --surface-muted: #ECF1EC;
+  --ink: #213A34;
+  --ink-soft: #55645F;
+  --brand: #173B35;
+  --brand-hover: #102D29;
+  --border: #D7DED7;
+  --accent-earth: #9C552E;
+  --accent-gold: #CBB97C;
+  --success-ink: #2E694F;
+  --success-bg: #EAF4ED;
+  --warning-ink: #91571B;
+  --warning-bg: #FFF5E8;
+  --mismatch-ink: #5A534C;
+  --mismatch-bg: #F2EFE9;
+  --error-ink: #B52D34;
+  --error-bg: #FFF0F0;
+  --info-ink: #2B526F;
+  --info-bg: #EDF5FA;
+  --radius-input: 10px;
+  --radius-card: 16px;
+  --radius-image: 20px;
+  --page-max: 1240px;
+  --content-max: 760px;
+}
+
 @theme {
-  --color-canvas: #F7F5EF;
-  --color-ink: #173B35;
-  --color-terracotta: #B85F3C;
-  /* Text use: 6.4:1 on canvas #F7F5EF (WCAG AA 4.5:1 passes). */
-  --color-terracotta-text: #8F4426;
-  --color-sage: #E6EEE8;
-  --color-body: #26332F;
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-border: var(--border);
+  --color-accent-earth: var(--accent-earth);
+  --color-accent-gold: var(--accent-gold);
+  --color-success-ink: var(--success-ink);
+  --color-success-bg: var(--success-bg);
+  --color-warning-ink: var(--warning-ink);
+  --color-warning-bg: var(--warning-bg);
+  --color-mismatch-ink: var(--mismatch-ink);
+  --color-mismatch-bg: var(--mismatch-bg);
+  --color-error-ink: var(--error-ink);
+  --color-error-bg: var(--error-bg);
+  --color-info-ink: var(--info-ink);
+  --color-info-bg: var(--info-bg);
+  /* Legacy aliases used by existing components */
+  --color-terracotta: var(--accent-earth);
+  --color-terracotta-text: var(--accent-earth);
+  --color-sage: var(--surface-muted);
+  --color-body: var(--ink-soft);
+  --max-width-page: var(--page-max);
+  --max-width-content: var(--content-max);
   --font-sans: Inter, system-ui, "Segoe UI", "Noto Sans Devanagari", sans-serif;
 }
 
 @layer base {
   body {
-    background-color: var(--color-canvas);
-    color: var(--color-body);
+    background-color: var(--canvas);
+    color: var(--ink-soft);
     font-family: var(--font-sans);
     font-size: 1rem;
     line-height: 1.6;
   }
 
   :focus-visible {
-    outline: 3px solid #173B35;
+    outline: 3px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: var(--canvas);
+    color: var(--ink);
+    border-radius: var(--radius-input);
+  }
+
+  .skip-link:focus {
+    left: 1rem;
+    top: 1rem;
+    outline: 3px solid var(--brand);
     outline-offset: 2px;
   }
 }

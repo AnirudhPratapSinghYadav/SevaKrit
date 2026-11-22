@@ -20,23 +20,24 @@
     "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=981&pointvalue=2&status=byschemefor",
     "publisher": "Madhya Pradesh CM Helpline",
     "checkedAt": "not-yet-checked",
-    "evidenceText": "Lead only; not yet read or verified.",
+    "evidenceText": "Lead only; not yet read or verified. Prior audit flagged category conflict.",
     "status": "unverified"
   },
   {
     "id": "pm-janman-housing-mp",
-    "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=974&pointvalue=3&status=BySchemeBenifits",
+    "url": "https://cmhelpline.mp.gov.in/KnowYourEntitleDetail.aspx?Schemeid=974&pointvalue=2&status=byschemefor",
     "publisher": "Madhya Pradesh CM Helpline",
-    "checkedAt": "not-yet-checked",
-    "evidenceText": "Lead only; not yet read or verified.",
-    "status": "unverified"
+    "checkedAt": "2026-11-22",
+    "effectiveFrom": "2023-11-15",
+    "evidenceText": "PVTG Baiga/Bharia/Sahariya in 24 MP districts; Rural; exclusions: pucca house; any household member is a Government employee. Apply via Gram Panchayat after Awas+ Gram Sabha approval.",
+    "status": "verified"
   },
   {
     "id": "pm-janman-union",
-    "url": "https://tribal.gov.in/about/divisions/pm-janman",
+    "url": "https://tribal.nic.in/PM-JANMAN.aspx",
     "publisher": "Ministry of Tribal Affairs",
-    "checkedAt": "not-yet-checked",
-    "evidenceText": "Lead only; not yet read or verified.",
+    "checkedAt": "2026-11-22",
+    "evidenceText": "Fetch returned HTTP 500 on 2026-11-22. Not used for decisive rules until readable.",
     "status": "unverified"
   }
 ]

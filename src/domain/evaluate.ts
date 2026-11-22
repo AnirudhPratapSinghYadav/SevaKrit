@@ -96,12 +96,17 @@ function checkCondition(rule: Rule, fact: Fact): Check {
 function sourceProblem(sourceId: string, sources: SourceIndex, now: string): string | null {
   const source = sources.get(sourceId);
   if (!source) return `source ${sourceId} is missing`;
+  if (source.status === "conflicting") return `source ${sourceId} is conflicting`;
   if (source.status !== "verified") return `source ${sourceId} is not verified`;
   if (isStale(source.checkedAt, now)) return `source ${sourceId} is stale or unchecked`;
   return null;
 }
 
-/** Outcome for one rule before group logic. A pass that rests on a bad source becomes source_review_needed. */
+/**
+ * Outcome for one rule before group logic.
+ * Missing facts stay unknown. Source problems block BOTH pass and fail so unverified,
+ * stale, conflicting or missing evidence cannot produce a confident match or mismatch.
+ */
 function evaluateRule(rule: Rule, profile: HouseholdProfile, sources: SourceIndex, now: string): RuleResult {
   const fact = factFor(profile, rule.factKey);
   if (fact === undefined) {
@@ -111,14 +116,14 @@ function evaluateRule(rule: Rule, profile: HouseholdProfile, sources: SourceInde
   if (check.holds === null) {
     return { ruleId: rule.id, outcome: "unknown", reason: check.reason };
   }
+  const problem = sourceProblem(rule.sourceId, sources, now);
+  if (problem !== null) {
+    return { ruleId: rule.id, outcome: "source_review_needed", reason: `${rule.description}: ${problem}` };
+  }
   // Exclusion: the condition holding is the failure.
   const passes = rule.exclusion ? !check.holds : check.holds;
   if (!passes) {
     return { ruleId: rule.id, outcome: "fail", reason: `${rule.description}: not met` };
-  }
-  const problem = sourceProblem(rule.sourceId, sources, now);
-  if (problem !== null) {
-    return { ruleId: rule.id, outcome: "source_review_needed", reason: `${rule.description}: ${problem}` };
   }
   return { ruleId: rule.id, outcome: "pass", reason: rule.description };
 }

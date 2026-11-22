@@ -1,7 +1,9 @@
 import { z } from "zod";
 import schemesJson from "../data/schemes.json";
+import ruleVersionsJson from "../../data/ruleVersions.json";
 import sourcesJson from "../../data/sources.json";
 import {
+  RuleVersionSchema,
   SchemeSchema,
   SourceRecordSchema,
   type RuleVersion,
@@ -16,6 +18,9 @@ const ALL_SCHEMES: Scheme[] = parsedSchemes.success ? parsedSchemes.data : [];
 const parsedSources = z.array(SourceRecordSchema).safeParse(sourcesJson);
 const ALL_SOURCES: SourceRecord[] = parsedSources.success ? parsedSources.data : [];
 
+const parsedRuleVersions = z.array(RuleVersionSchema).safeParse(ruleVersionsJson);
+const ALL_RULE_VERSIONS: RuleVersion[] = parsedRuleVersions.success ? parsedRuleVersions.data : [];
+
 export function getPublishedSchemes(): Scheme[] {
   return ALL_SCHEMES.filter((scheme) => scheme.status === "published");
 }
@@ -29,9 +34,9 @@ export function getSources(): SourceRecord[] {
   return ALL_SOURCES;
 }
 
-/** No verified rule versions are loaded yet. Rule files are added after official verification. */
+/** Published rule versions loaded from verified source-backed JSON. */
 export function getRuleVersions(): RuleVersion[] {
-  return [];
+  return ALL_RULE_VERSIONS;
 }
 
 /** Returns the scheme's rule version, or an empty one (outcome needs_information) when none exists. */

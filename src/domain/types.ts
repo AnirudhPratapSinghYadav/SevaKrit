@@ -14,7 +14,7 @@ export const SourceRecordSchema = z
     effectiveFrom: IsoDate.optional(),
     effectiveTo: IsoDate.optional(),
     evidenceText: z.string().max(300),
-    status: z.enum(["verified", "unverified"]),
+    status: z.enum(["verified", "unverified", "conflicting"]),
   })
   .strict();
 export type SourceRecord = z.infer<typeof SourceRecordSchema>;

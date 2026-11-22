@@ -1,7 +1,14 @@
 // Deterministic keyword parser. Proposes facts only; never confirms them. No AI, no network.
 import { z } from "zod";
 
-export const FACT_KEYS = ["tribalGroup", "district", "houseType", "dairyIntent"] as const;
+export const FACT_KEYS = [
+  "tribalGroup",
+  "district",
+  "houseType",
+  "dairyIntent",
+  "hasGovernmentEmployee",
+  "settlementArea",
+] as const;
 export const FactKeySchema = z.enum(FACT_KEYS);
 export type FactKey = z.infer<typeof FactKeySchema>;
 
@@ -20,6 +27,8 @@ export const FACT_LABELS: Record<FactKey, string> = {
   district: "District",
   houseType: "House type",
   dairyIntent: "Wants to keep dairy animals",
+  hasGovernmentEmployee: "Any household member is a government employee",
+  settlementArea: "Settlement area",
 };
 
 export const EXAMPLE_NARRATIVE =
@@ -28,17 +37,32 @@ export const EXAMPLE_NARRATIVE =
 export const MAX_NARRATIVE_LENGTH = 2000;
 
 const TRIBAL_GROUPS = ["Baiga", "Bharia", "Sahariya"] as const;
+/** Districts named on the verified PM-JANMAN CM Helpline listing (Schemeid=974). */
 const DISTRICTS = [
-  "Dindori",
-  "Mandla",
-  "Balaghat",
-  "Shahdol",
-  "Umaria",
   "Anuppur",
+  "Ashoknagar",
+  "Bhind",
+  "Balaghat",
   "Chhindwara",
-  "Seoni",
+  "Datia",
+  "Dindori",
+  "Guna",
+  "Gwalior",
+  "Katni",
+  "Jabalpur",
+  "Narsinghpur",
+  "Mandla",
+  "Morena",
+  "Shahdol",
   "Sheopur",
+  "Shivpuri",
+  "Raisen",
+  "Satna",
+  "Singrauli",
   "Sidhi",
+  "Seoni",
+  "Vidisha",
+  "Umaria",
 ] as const;
 const KUTCHA_WORDS = ["kutcha", "kachcha", "kachha"] as const;
 const PUCCA_WORDS = ["pucca", "pakka", "pakki"] as const;

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "pm-janman-housing-mp:v1",
+    "schemeId": "pm-janman-housing-mp",
+    "version": 1,
+    "effectiveAt": "2023-11-15",
+    "reviewedAt": "2026-11-22",
+    "sourceIds": ["pm-janman-housing-mp"],
+    "rules": [
+      {
+        "id": "pmj-h-community",
+        "factKey": "tribalGroup",
+        "operator": "one_of",
+        "value": ["Baiga", "Bharia", "Sahariya"],
+        "description": "Household is among the three MP PVTG communities named on the CM Helpline scheme page (Baiga, Bharia, Sahariya)",
+        "sourceId": "pm-janman-housing-mp",
+        "exclusion": false
+      },
+      {
+        "id": "pmj-h-district",
+        "factKey": "district",
+        "operator": "one_of",
+        "value": [
+          "Anuppur",
+          "Ashoknagar",
+          "Bhind",
+          "Balaghat",
+          "Chhindwara",
+          "Datia",
+          "Dindori",
+          "Guna",
+          "Gwalior",
+          "Katni",
+          "Jabalpur",
+          "Narsinghpur",
+          "Mandla",
+          "Morena",
+          "Shahdol",
+          "Sheopur",
+          "Shivpuri",
+          "Raisen",
+          "Satna",
+          "Singrauli",
+          "Sidhi",
+          "Seoni",
+          "Vidisha",
+          "Umaria"
+        ],
+        "description": "Household district is one of the 24 Madhya Pradesh districts listed on the CM Helpline scheme page",
+        "sourceId": "pm-janman-housing-mp",
+        "exclusion": false
+      },
+      {
+        "id": "pmj-h-rural",
+        "factKey": "settlementArea",
+        "operator": "equals",
+        "value": "rural",
+        "description": "Scheme area is listed as Rural on the CM Helpline scheme page",
+        "sourceId": "pm-janman-housing-mp",
+        "exclusion": false
+      },
+      {
+        "id": "pmj-h-exclude-pucca",
+        "factKey": "houseType",
+        "operator": "equals",
+        "value": "pucca",
+        "description": "Exclusion A on CM Helpline: household with a pucca house",
+        "sourceId": "pm-janman-housing-mp",
+        "exclusion": true
+      },
+      {
+        "id": "pmj-h-exclude-govt-job",
+        "factKey": "hasGovernmentEmployee",
+        "operator": "is_true",
+        "value": true,
+        "description": "Exclusion B on CM Helpline: household with any member as a Government employee",
+        "sourceId": "pm-janman-housing-mp",
+        "exclusion": true
+      }
+    ]
+  }
+]
