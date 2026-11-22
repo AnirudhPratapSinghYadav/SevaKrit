@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import ConnectionBadge from "../components/ConnectionBadge";
+import DictationButton from "../components/DictationButton";
 import FactReview from "../components/FactReview";
 import FollowUpQuestion from "../components/FollowUpQuestion";
 import { useAppState } from "../context/AppState";
@@ -94,6 +95,12 @@ export default function Intake() {
           onChange={(event) => setNarrative(event.target.value)}
           rows={5}
           className="rounded-md border border-border bg-surface p-3"
+        />
+        <DictationButton
+          onChunk={(chunk) => {
+            const space = narrative !== "" && !narrative.endsWith(" ") ? " " : "";
+            setNarrative(`${narrative}${space}${chunk}`);
+          }}
         />
         <div className="flex flex-wrap gap-3">
           <button type="button" onClick={useExample} className="min-h-11 rounded-md border border-border px-4 text-ink">

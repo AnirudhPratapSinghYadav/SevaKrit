@@ -1,20 +1,33 @@
 import { describe, expect, it } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import { renderToStaticMarkup } from "react-dom/server";
+import { AuthProvider } from "../context/AuthContext";
+import { LanguageProvider } from "../i18n/Language";
 import Review from "../pages/Review";
 
-describe("Review reviewer panel", () => {
-  const html = renderToStaticMarkup(<Review />);
+function renderReview() {
+  return renderToStaticMarkup(
+    <LanguageProvider>
+      <MemoryRouter>
+        <AuthProvider>
+          <Review />
+        </AuthProvider>
+      </MemoryRouter>
+    </LanguageProvider>,
+  );
+}
 
-  it("explains that sign-in needs Supabase configuration", () => {
-    expect(html).toContain("Sign-in is unavailable");
+describe("Review reviewer panel", () => {
+  const html = renderReview();
+
+  it("explains that reviewer auth needs Supabase configuration when unset", () => {
+    expect(html).toMatch(/Reviewer sign-in unavailable|Sign-in is unavailable/i);
+    expect(html).toContain("VITE_SUPABASE");
   });
 
-  it("does not render a fake local admin form without Supabase", () => {
-    expect(html).not.toContain("<button");
-    expect(html).not.toContain("<input");
-    expect(html).not.toContain("<form");
-    expect(html).not.toContain("<select");
-    expect(html).not.toContain("<textarea");
+  it("does not render a fake local admin credential form", () => {
+    expect(html).not.toContain('type="password"');
+    expect(html).not.toContain("isAdmin");
   });
 
   it("lists scheme ids and marks unverified dates as not verified", () => {

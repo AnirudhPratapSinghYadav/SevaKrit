@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import ActivityInbox from "../components/ActivityInbox";
+import CitizenGate from "../components/auth/CitizenGate";
 import FeatureRail from "../components/FeatureRail";
 import { useAuth } from "../context/AuthContext";
 import { useAppState } from "../context/AppState";
@@ -12,6 +14,7 @@ export default function Workspace() {
   const factCount = Object.keys(profile.confirmedFacts).length;
 
   return (
+    <CitizenGate>
     <section className="flex flex-col gap-8">
       <header className="flex flex-col gap-3">
         <p className="text-sm font-semibold uppercase tracking-wide text-accent-earth">{t("workspaceEyebrow")}</p>
@@ -68,6 +71,9 @@ export default function Workspace() {
           <span className="text-sm text-ink-soft">{t("workspaceAssistedHint")}</span>
         </Link>
       </div>
+
+      <ActivityInbox />
     </section>
+    </CitizenGate>
   );
 }

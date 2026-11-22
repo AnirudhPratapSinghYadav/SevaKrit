@@ -2,8 +2,10 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatureRail from "../components/FeatureRail";
 import { useAppState } from "../context/AppState";
+import EmptyState from "../components/ui/EmptyState";
 import { compareRuleVersions, loadWatchedEvaluations, rememberEvaluation } from "../domain/haqWatch";
 import { useLanguage } from "../i18n/Language";
+import { pushActivity } from "../services/activityInbox";
 import { evaluatePublishedSchemes } from "../services/evaluatePublished";
 import { getRuleVersions } from "../services/schemeRepository";
 
@@ -19,6 +21,12 @@ export default function HaqWatch() {
     for (const entry of entries) {
       rememberEvaluation(entry.scheme.id, entry.detail.assessment.ruleVersionId, nowIso);
     }
+    pushActivity(
+      "watch_baseline",
+      "Rule versions remembered",
+      "HaqWatch saved the current published rule version ids in this browser for later comparison.",
+      nowIso,
+    );
     setWatched(loadWatchedEvaluations());
   }
 
@@ -38,6 +46,18 @@ export default function HaqWatch() {
       >
         {t("watchRemember")}
       </button>
+
+      {entries.length === 0 ? (
+        <EmptyState
+          title={t("resultsTitle")}
+          description={t("planEmpty")}
+          action={
+            <Link to="/discover" className="underline underline-offset-4">
+              {t("planUpdate")}
+            </Link>
+          }
+        />
+      ) : null}
 
       <ul className="flex flex-col gap-4">
         {entries.map((entry) => {

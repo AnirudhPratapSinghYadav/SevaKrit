@@ -39,7 +39,12 @@ await client.query(`
 `);
 await client.query(`grant usage on schema public to anon, authenticated`);
 
-for (const file of ["001_initial.sql", "002_product_schema.sql", "003_reviewer_rls_audit.sql"]) {
+for (const file of [
+  "001_initial.sql",
+  "002_product_schema.sql",
+  "003_reviewer_rls_audit.sql",
+  "004_citizen_profiles.sql",
+]) {
   const sql = fs.readFileSync(path.join(root, file), "utf8");
   await client.query(sql);
   pass(`applied ${file}`);

@@ -77,8 +77,9 @@ test("privacy page is reachable", async ({ page }) => {
 
 test("review page is read-only", async ({ page }) => {
   await page.goto("/review");
-  await expect(page.getByText("Sign-in is unavailable").first()).toBeVisible();
+  await expect(page.getByText(/sign-in unavailable|Reviewer authentication required/i).first()).toBeVisible();
   await expect(page.locator("main").getByRole("button")).toHaveCount(0);
+  await expect(page.locator('main input[type="password"]')).toHaveCount(0);
 });
 
 test("mobile 360px has no horizontal overflow on discover", async ({ page }) => {

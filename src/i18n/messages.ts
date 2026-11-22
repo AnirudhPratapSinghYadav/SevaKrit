@@ -168,6 +168,18 @@ export const MESSAGES = {
     workspaceAssistedHint: "Consent-first help for volunteers",
     navLogin: "Sign in",
     navWorkspace: "Workspace",
+    dictationStart: "Dictate description",
+    dictationStop: "Stop dictation",
+    dictationUnsupported: "Voice dictation is not available in this browser.",
+    dictationHint: "Dictation only fills the text box. You must still review and confirm every fact.",
+    activityTitle: "On this device",
+    activityEmpty: "No local activity notes yet.",
+    activityDisclaimer: "These notes are saved in this browser only. They are not government notifications.",
+    confirmClearTitle: "Clear household data?",
+    confirmClearBody:
+      "This removes confirmed answers, progress, reminders and activity notes from this browser. Language preference is kept.",
+    confirmClearAction: "Clear data",
+    cancel: "Cancel",
   },
   hi: {
     brand: "हक़पथ",
@@ -334,6 +346,18 @@ export const MESSAGES = {
     workspaceAssistedHint: "स्वयंसेवकों के लिए सहमति-प्रथम सहायता",
     navLogin: "साइन इन",
     navWorkspace: "कार्यक्षेत्र",
+    dictationStart: "विवरण बोलें",
+    dictationStop: "बोलना बंद करें",
+    dictationUnsupported: "इस ब्राउज़र में आवाज़ से लिखना उपलब्ध नहीं है।",
+    dictationHint: "आवाज़ केवल पाठ भरती है। हर तथ्य की समीक्षा और पुष्टि फिर भी आवश्यक है।",
+    activityTitle: "इस डिवाइस पर",
+    activityEmpty: "अभी कोई स्थानीय गतिविधि नोट नहीं।",
+    activityDisclaimer: "ये नोट केवल इसी ब्राउज़र में सहेजे जाते हैं। ये सरकारी सूचनाएँ नहीं हैं।",
+    confirmClearTitle: "परिवार का डेटा मिटाएँ?",
+    confirmClearBody:
+      "यह पुष्ट उत्तर, प्रगति, रिमाइंडर और गतिविधि नोट इस ब्राउज़र से हटा देगा। भाषा पसंद रहेगी।",
+    confirmClearAction: "डेटा मिटाएँ",
+    cancel: "रद्द करें",
   },
 } as const;
 

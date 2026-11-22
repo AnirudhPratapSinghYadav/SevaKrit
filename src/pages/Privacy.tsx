@@ -1,9 +1,13 @@
 import { useState } from "react";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { useAppState } from "../context/AppState";
+import { useLanguage } from "../i18n/Language";
 
 export default function Privacy() {
   const { resetHousehold, confirmedFacts, unknownFacts } = useAppState();
+  const { t } = useLanguage();
   const [cleared, setCleared] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <article className="flex flex-col gap-6">
@@ -53,10 +57,7 @@ export default function Privacy() {
         </p>
         <button
           type="button"
-          onClick={() => {
-            resetHousehold();
-            setCleared(true);
-          }}
+          onClick={() => setConfirmOpen(true)}
           className="min-h-11 self-start rounded-md border border-ink px-4 font-semibold text-ink"
         >
           Clear this browser&apos;s household data
@@ -85,6 +86,21 @@ export default function Privacy() {
       <p className="text-sm">
         Interface Hindi, where shown, is a product translation and not a certified government translation.
       </p>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={t("confirmClearTitle")}
+        message={t("confirmClearBody")}
+        confirmLabel={t("confirmClearAction")}
+        cancelLabel={t("cancel")}
+        danger
+        onCancel={() => setConfirmOpen(false)}
+        onConfirm={() => {
+          resetHousehold();
+          setCleared(true);
+          setConfirmOpen(false);
+        }}
+      />
     </article>
   );
 }

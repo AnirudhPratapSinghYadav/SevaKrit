@@ -2,8 +2,10 @@ import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import FeatureRail from "../components/FeatureRail";
 import PublicQr from "../components/qr/PublicQr";
+import EmptyState from "../components/ui/EmptyState";
 import { assertPocketPrivacy, buildPocketCard } from "../domain/haqPocket";
 import { useLanguage } from "../i18n/Language";
+import { pushActivity } from "../services/activityInbox";
 import { planSchemes } from "../services/evaluatePublished";
 import { getSources } from "../services/schemeRepository";
 import { useAppState } from "../context/AppState";
@@ -30,12 +32,15 @@ export default function HaqPocket() {
       </header>
 
       {cards.length === 0 ? (
-        <p>
-          {t("planEmpty")}{" "}
-          <Link to="/discover" className="underline underline-offset-4">
-            {t("planUpdate")}
-          </Link>
-        </p>
+        <EmptyState
+          title={t("toolPocket")}
+          description={t("planEmpty")}
+          action={
+            <Link to="/discover" className="underline underline-offset-4">
+              {t("planUpdate")}
+            </Link>
+          }
+        />
       ) : (
         cards.map((card) => {
           const privacy = assertPocketPrivacy(card.qrPayload);
@@ -92,7 +97,14 @@ export default function HaqPocket() {
               </p>
               <button
                 type="button"
-                onClick={() => window.print()}
+                onClick={() => {
+                  pushActivity(
+                    "pocket_printed",
+                    "HaqPocket print opened",
+                    `Public card for ${card.schemeId}. QR stays privacy-safe (public scheme URL only).`,
+                  );
+                  window.print();
+                }}
                 className="min-h-11 self-start rounded-md border border-ink px-4 font-semibold text-ink no-print"
               >
                 {t("printButton")}

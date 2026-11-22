@@ -1,8 +1,9 @@
+import ReviewerGate from "../components/auth/ReviewerGate";
 import { getAllDraftSchemes, getPublishedSchemes, getSources } from "../services/schemeRepository";
 import { getSupabase } from "../services/supabaseBrowser";
 import ReviewSession from "./ReviewSession";
 
-// Read-only reviewer panel. It shows catalogue state and performs no writes.
+// Catalogue is readable; draft/publish UI requires authenticated reviewer session + DB RLS.
 export default function Review() {
   const schemes = [...getPublishedSchemes(), ...getAllDraftSchemes()];
   const sources = getSources();
@@ -15,14 +16,16 @@ export default function Review() {
         The catalogue below is the local reviewed file set. Publishing goes through the database only when
         Supabase is configured. There is no password stored in the page.
       </p>
-      {remote === null ? (
-        <p>
-          Sign-in is unavailable until VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set. Draft edits
-          stay disabled.
-        </p>
-      ) : (
-        <ReviewSession client={remote} />
-      )}
+      <ReviewerGate>
+        {remote === null ? (
+          <p>
+            Sign-in is unavailable until VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set. Draft edits
+            stay disabled.
+          </p>
+        ) : (
+          <ReviewSession client={remote} />
+        )}
+      </ReviewerGate>
 
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">Schemes</h2>

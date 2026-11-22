@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatureRail from "../components/FeatureRail";
+import EmptyState from "../components/ui/EmptyState";
 import { useAppState } from "../context/AppState";
 import { buildSevaRoute, markVisitApplied, undoVisitApplied } from "../domain/sevaRoute";
 import { useLanguage } from "../i18n/Language";
+import { pushActivity } from "../services/activityInbox";
 import { planSchemes } from "../services/evaluatePublished";
 import { getSources } from "../services/schemeRepository";
 
@@ -32,12 +34,15 @@ export default function SevaRoutePage() {
       </header>
 
       {plans.length === 0 ? (
-        <p>
-          {t("planEmpty")}{" "}
-          <Link to="/plan" className="underline underline-offset-4">
-            {t("navPlan")}
-          </Link>
-        </p>
+        <EmptyState
+          title={t("toolRoute")}
+          description={t("planEmpty")}
+          action={
+            <Link to="/plan" className="underline underline-offset-4">
+              {t("navPlan")}
+            </Link>
+          }
+        />
       ) : (
         plans.map((plan) => (
           <article key={plan.schemeId} className="flex flex-col gap-3 rounded-md border border-border p-4">
@@ -63,6 +68,13 @@ export default function SevaRoutePage() {
                 type="button"
                 onClick={() => {
                   const result = markVisitApplied(plan.schemeId, new Date().toISOString());
+                  if (result.ok) {
+                    pushActivity(
+                      "progress_saved",
+                      "Self-reported visit progress",
+                      `Marked preparation progress for ${plan.schemeId} in this browser only.`,
+                    );
+                  }
                   setMessage(result.ok ? t("routeMarked") : result.error);
                   setRefresh((value) => value + 1);
                 }}

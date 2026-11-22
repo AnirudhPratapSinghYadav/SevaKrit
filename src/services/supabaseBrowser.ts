@@ -11,7 +11,14 @@ export function getSupabase(): SupabaseClient | null {
     const url = env.VITE_SUPABASE_URL;
     const key = env.VITE_SUPABASE_ANON_KEY;
     if (url === undefined || key === undefined) return null;
-    client = createClient(url, key);
+    // Session persistence pattern adapted from Nagarakshak supabase.js (anon key only).
+    client = createClient(url, key, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    });
   }
   return client;
 }

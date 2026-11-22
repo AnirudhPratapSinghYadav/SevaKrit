@@ -1,10 +1,12 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatureRail from "../components/FeatureRail";
+import EmptyState from "../components/ui/EmptyState";
 import { useAppState } from "../context/AppState";
 import { diagnoseIssue, type ResolveIssueKind } from "../domain/haqResolve";
 import { useLanguage } from "../i18n/Language";
 import type { MessageKey } from "../i18n/messages";
+import { pushActivity } from "../services/activityInbox";
 import { evaluatePublishedSchemes } from "../services/evaluatePublished";
 import { getSources } from "../services/schemeRepository";
 
@@ -44,12 +46,15 @@ export default function HaqResolve() {
       </header>
 
       {!preferred ? (
-        <p>
-          {t("planEmpty")}{" "}
-          <Link to="/results" className="underline underline-offset-4">
-            {t("planReviewResults")}
-          </Link>
-        </p>
+        <EmptyState
+          title={t("toolResolve")}
+          description={t("planEmpty")}
+          action={
+            <Link to="/results" className="underline underline-offset-4">
+              {t("planReviewResults")}
+            </Link>
+          }
+        />
       ) : (
         <>
           <p className="text-sm">
@@ -61,7 +66,15 @@ export default function HaqResolve() {
           <select
             id="resolve-kind"
             value={kind}
-            onChange={(event) => setKind(event.target.value as ResolveIssueKind)}
+            onChange={(event) => {
+              const next = event.target.value as ResolveIssueKind;
+              setKind(next);
+              pushActivity(
+                "resolve_opened",
+                "HaqResolve guidance opened",
+                `Selected issue kind: ${next}. Advice uses catalogue text only.`,
+              );
+            }}
             className="min-h-11 rounded-md border border-border px-3"
           >
             {KINDS.map((item) => (

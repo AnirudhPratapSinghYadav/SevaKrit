@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import FeatureRail from "../components/FeatureRail";
+import EmptyState from "../components/ui/EmptyState";
 import { useAppState } from "../context/AppState";
 import { runHaqCompass } from "../domain/haqCompass";
 import { useLanguage } from "../i18n/Language";
@@ -65,6 +66,18 @@ export default function HaqCompass() {
           <option value="Yes">{t("yes")}</option>
         </select>
       </fieldset>
+
+      {report.diffs.length === 0 ? (
+        <EmptyState
+          title={t("toolCompass")}
+          description={t("planEmpty")}
+          action={
+            <Link to="/discover" className="underline underline-offset-4">
+              {t("planUpdate")}
+            </Link>
+          }
+        />
+      ) : null}
 
       <ul className="flex flex-col gap-3">
         {report.diffs.map((diff) => (

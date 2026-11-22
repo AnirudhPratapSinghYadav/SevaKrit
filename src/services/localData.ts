@@ -1,3 +1,4 @@
+import { clearActivity } from "./activityInbox";
 import { clearHouseholdStorage } from "./householdStore";
 import { clearProgress } from "./progressRepository";
 import { clearFollowUps } from "./reminderRepository";
@@ -7,4 +8,5 @@ export function clearHouseholdData(): void {
   clearHouseholdStorage();
   clearProgress();
   clearFollowUps();
+  clearActivity();
 }

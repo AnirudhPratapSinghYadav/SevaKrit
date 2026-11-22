@@ -222,6 +222,26 @@ Parent HEAD before this work: `01786be` on `main` (matched origin).
 2. Hosted Supabase project credentials still required for a live reviewer against the internet.
 3. Do not claim production-ready backend until PostgREST+Auth RLS suite passes on a healthy machine.
 
+## Checkpoint — Nagarakshak pattern integration (2026-11-22 late night)
+
+Reference: `nagarakshak-reference` @ `a440c99` (no root LICENSE; private repo; same owner — patterns reimplemented natively, civic modules rejected).
+
+### Adapted into SevaKrit
+- UI: `EmptyState`, `LoadingSpinner`, `AppDialog`, `ConfirmDialog` (+ `cn`, `queryWithTimeout`)
+- Auth: `CitizenGate`, `ReviewerGate`; Supabase client persist/refresh; additive `004_citizen_profiles.sql`
+- Intake: optional Web Speech dictation (Chrome/Edge) — never decides eligibility
+- Local activity inbox (not government notifications)
+- Five Haq tools: EmptyStates + privacy-safe activity notes; Privacy clear uses ConfirmDialog
+
+### Rejected
+Complaints, maps, wards, feed, governance AI, Hyderabad geo, CityHeadRoute, ward signup, MediaRecorder voice notes as eligibility input.
+
+### Verification
+- typecheck PASS, lint PASS, unit **153/153**, build PASS
+- Playwright: journey+innovations+phase1+phase2 re-verified with `--workers=1` after disk/resource flakiness; review CTA text updated for ReviewerGate
+- Hosted Supabase + Vercel still blocked without credentials
+- npm audit unchanged (dev vitest chain + zod high runtime)
+
 ## Checkpoint — five signature innovations (2026-11-22 late)
 
 ### Implemented routes
