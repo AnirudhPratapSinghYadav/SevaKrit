@@ -39,22 +39,21 @@ export default function Home() {
           decoding="async"
           className="absolute inset-0 h-full w-full object-cover object-[50%_42%] parallax-hero"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#061a16]/96% via-[#0a2a24]/82% to-[#0a2a24]/35%" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#061a16] via-transparent to-[#061a16]/40%" />
+        <div className="hero-scrim absolute inset-0" aria-hidden="true" />
         <div className="orb orb-a pointer-events-none absolute left-[8%] top-[18%] h-56 w-56 bg-[radial-gradient(circle,#d4b45a_0%,transparent_70%)]" />
         <div className="orb orb-b pointer-events-none absolute bottom-[12%] right-[10%] h-64 w-64 bg-[radial-gradient(circle,#a84a1f_0%,transparent_70%)]" />
 
         <div className="relative z-10 mx-auto grid w-full max-w-page grid-cols-1 items-end gap-10 px-4 pb-16 pt-28 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-20">
-          <div className="flex flex-col gap-6 text-canvas">
-            <p className="reveal text-sm font-semibold uppercase tracking-[0.28em] text-accent-gold">
+          <div className="hero-copy flex flex-col gap-6">
+            <p className="reveal hero-eyebrow text-sm font-semibold uppercase tracking-[0.28em]">
               {hi ? "हक़पथ · सेवाकृत" : "HaqPath · SevaKrit"}
             </p>
-            <h1 className="reveal reveal-delay-1 font-display text-[2.75rem] font-semibold leading-[1.05] md:text-6xl lg:text-[4.25rem]">
+            <h1 className="reveal reveal-delay-1 hero-title font-display text-[2.75rem] font-semibold leading-[1.05] md:text-6xl lg:text-[4.25rem]">
               {hi
                 ? "किसी योजना का नाम जाने बिना भी आगे का रास्ता मिलना चाहिए।"
                 : "You shouldn't need to know a scheme's name to find a way forward."}
             </h1>
-            <p className="reveal reveal-delay-2 max-w-xl text-lg text-canvas/85 md:text-xl">
+            <p className="reveal reveal-delay-2 hero-lede max-w-xl text-lg md:text-xl">
               {hi
                 ? "मध्य प्रदेश के बैगा, भारिया, सहरिया परिवारों के लिए: संभावित सहायता, नियम-साक्ष्य, अगला ठोस कदम। सरकारी पोर्टल नहीं।"
                 : "For Baiga, Bharia and Sahariya households in Madhya Pradesh: possible benefits, rule evidence, a concrete next step. Not a government portal."}
@@ -68,18 +67,18 @@ export default function Home() {
               </Link>
               <Link
                 to="/workspace"
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-canvas/35 bg-white/10 px-8 font-semibold text-canvas backdrop-blur-md"
+                className="hero-cta-secondary inline-flex min-h-12 items-center justify-center rounded-full px-8 font-semibold"
               >
                 {hi ? "कार्यक्षेत्र" : "Open workspace"}
               </Link>
               <Link
                 to="#story"
-                className="inline-flex min-h-12 items-center justify-center px-3 font-semibold text-accent-gold underline-offset-4 hover:underline"
+                className="hero-cta-link inline-flex min-h-12 items-center justify-center px-3 font-semibold underline-offset-4 hover:underline"
               >
                 {hi ? "कैसे काम करता है" : "How it works"}
               </Link>
             </div>
-            <p className="reveal reveal-delay-4 text-sm text-canvas/65">
+            <p className="reveal reveal-delay-4 hero-note text-sm">
               {hi ? "परिणाम “संभावित” हैं। अंतिम निर्णय विभाग का।" : "Outcomes say likely. Departments decide."}
             </p>
           </div>

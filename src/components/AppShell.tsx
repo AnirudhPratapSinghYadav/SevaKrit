@@ -24,11 +24,11 @@ export default function AppShell() {
             <div className="flex flex-col">
               <Link
                 to="/"
-                className="inline-flex min-h-11 items-center font-display text-2xl font-semibold tracking-tight text-canvas md:text-[1.75rem]"
+                className="inline-flex min-h-11 items-center font-display text-2xl font-semibold tracking-tight text-white md:text-[1.75rem]"
               >
                 {t("brand")}
               </Link>
-              <p className="text-sm text-canvas/70">{t("tagline")}</p>
+              <p className="text-sm text-white/80">{t("tagline")}</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {!user && !isGuest && (
@@ -42,7 +42,7 @@ export default function AppShell() {
               <button
                 type="button"
                 onClick={toggle}
-                className="inline-flex min-h-11 items-center rounded-full border border-white/25 bg-white/10 px-4 font-semibold text-canvas backdrop-blur-md"
+                className="inline-flex min-h-11 items-center rounded-full border border-white/35 bg-white/12 px-4 font-semibold text-white backdrop-blur-md"
               >
                 {t("langToggle")}
               </button>
@@ -57,7 +57,7 @@ export default function AppShell() {
                   `inline-flex min-h-10 items-center rounded-full px-3 text-sm transition ${
                     isActive
                       ? "bg-accent-gold font-semibold text-ink"
-                      : "text-canvas/85 hover:bg-white/10 hover:text-canvas"
+                      : "text-white/90 hover:bg-white/12 hover:text-white"
                   }`
                 }
               >
@@ -66,13 +66,13 @@ export default function AppShell() {
             ))}
             <Link
               to="/assisted"
-              className="inline-flex min-h-10 items-center rounded-full px-3 text-sm text-canvas/85 hover:bg-white/10"
+              className="inline-flex min-h-10 items-center rounded-full px-3 text-sm text-white/90 hover:bg-white/12 hover:text-white"
             >
               {t("navAssisted")}
             </Link>
             <Link
               to="/how-it-works"
-              className="inline-flex min-h-10 items-center rounded-full px-3 text-sm text-canvas/85 hover:bg-white/10"
+              className="inline-flex min-h-10 items-center rounded-full px-3 text-sm text-white/90 hover:bg-white/12 hover:text-white"
             >
               {t("navHow")}
             </Link>
