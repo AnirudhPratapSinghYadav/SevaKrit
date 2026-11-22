@@ -221,3 +221,19 @@ Parent HEAD before this work: `01786be` on `main` (matched origin).
 1. Free disk space and stop other Docker Supabase stacks before full `supabase start` + `npm run test:rls` + Playwright + `vercel --prod`.
 2. Hosted Supabase project credentials still required for a live reviewer against the internet.
 3. Do not claim production-ready backend until PostgREST+Auth RLS suite passes on a healthy machine.
+
+## Checkpoint — Hindi wiring + reviewer simulator (2026-11-22 night)
+
+HEAD before commit: `205979c` (= origin/main).
+
+### Shipped this slice
+- Citizen i18n wired through Intake, Follow-ups, Results, Scheme Detail, Plan, Action Sheet; full Home nine-chapter Hindi.
+- Expanded `messages.ts` keys for detail/plan/print outcomes.
+- Reviewer: synthetic demo-household impact simulator (same offline evaluator as citizens) + existing Auth/RPC draft+publish.
+- Deduped duplicate `test:rls:sql` script key in package.json.
+
+### Verified this run
+- typecheck PASS, lint PASS, unit **140/140** PASS, production build PASS, Playwright **19/19** PASS.
+- Client bundle: no `service_role` string in `dist/`.
+- Docker CLI hung / unresponsive this session → SQL RLS **not re-executed** here (last recorded PASS was on slim Postgres:16 @ 54432 via `pg-rls-sql.mjs`).
+- Vercel CLI absent; no `.env` / hosted Supabase → **no live deploy URL**.

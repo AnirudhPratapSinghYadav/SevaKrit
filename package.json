@@ -12,7 +12,6 @@
     "test:e2e": "playwright test",
     "test:rls": "node scripts/rls-local.mjs",
     "test:rls:sql": "node scripts/pg-rls-sql.mjs",
-    "test:rls:sql": "node scripts/pg-rls-sql.mjs",
     "supabase:start": "supabase start",
     "supabase:status": "supabase status -o env",
     "preview": "vite preview"

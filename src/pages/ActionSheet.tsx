@@ -1,12 +1,22 @@
 import { Link } from "react-router-dom";
 import { documentRows } from "../domain/readiness";
-import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import { useAppState } from "../context/AppState";
+import { useLanguage } from "../i18n/Language";
+import type { MessageKey } from "../i18n/messages";
+import type { Outcome } from "../domain/types";
 import { planSchemes } from "../services/evaluatePublished";
 import { getSources } from "../services/schemeRepository";
 
+const OUTCOME_KEYS: Record<Outcome, MessageKey> = {
+  likely_fit: "likelyFit",
+  needs_information: "needsInformation",
+  likely_mismatch: "likelyMismatch",
+  source_review_needed: "sourceUnderReview",
+};
+
 export default function ActionSheet() {
   const { profile } = useAppState();
+  const { t, lang } = useLanguage();
   const nowIso = new Date().toISOString();
   const actionable = planSchemes(profile, nowIso);
   const sources = getSources();
@@ -14,10 +24,9 @@ export default function ActionSheet() {
   return (
     <article className="print-sheet flex flex-col gap-6">
       <header className="flex flex-col gap-2">
-        <h1 className="text-3xl font-semibold text-ink">HaqPath action sheet</h1>
+        <h1 className="text-3xl font-semibold text-ink">{t("printTitle")}</h1>
         <p className="text-sm">
-          Not an official certificate or government approval. Self-reported preparation only. Printed{" "}
-          {nowIso.slice(0, 10)}.
+          {t("printDisclaimer")} {lang === "hi" ? "मुद्रित" : "Printed"} {nowIso.slice(0, 10)}.
         </p>
       </header>
       <p className="no-print">
@@ -26,26 +35,31 @@ export default function ActionSheet() {
           onClick={() => window.print()}
           className="min-h-11 rounded-md border border-ink px-4 font-semibold text-ink"
         >
-          Print or save as PDF
+          {t("printButton")}
         </button>
         {" · "}
         <Link to="/plan" className="underline underline-offset-4">
-          Back to plan
+          {t("printBack")}
         </Link>
       </p>
       {actionable.length === 0 ? (
-        <p>No likely-fit scheme for the answers saved in this browser. Nothing here is an application.</p>
+        <p>{t("printEmpty")}</p>
       ) : (
         actionable.map(({ scheme, detail }) => {
           const source = sources.find((item) => scheme.sourceIds.includes(item.id));
+          const title = lang === "hi" && scheme.title.hi !== undefined ? scheme.title.hi : scheme.title.en;
           return (
             <section key={scheme.id} className="flex flex-col gap-3 border-t border-border pt-4">
-              <h2 className="text-xl font-semibold text-ink">{scheme.title.en}</h2>
+              <h2 className="text-xl font-semibold text-ink">{title}</h2>
               <p>
-                Result: {OUTCOME_LABELS[detail.assessment.outcome]}. Rule version {detail.assessment.ruleVersionId}.
+                {t("planResult")}: {t(OUTCOME_KEYS[detail.assessment.outcome])}. Rule version{" "}
+                {detail.assessment.ruleVersionId}.
               </p>
-              <p>Deadline: {scheme.deadline === null ? "No verified official deadline on this record." : scheme.deadline}</p>
-              <h3 className="font-semibold text-ink">Documents</h3>
+              <p>
+                {t("detailDeadline")}:{" "}
+                {scheme.deadline === null ? t("detailNoDeadline") : scheme.deadline}
+              </p>
+              <h3 className="font-semibold text-ink">{t("planDocuments")}</h3>
               <ul className="list-disc pl-5">
                 {documentRows(scheme.documents).map((row) => (
                   <li key={row.text}>
@@ -54,7 +68,7 @@ export default function ActionSheet() {
                   </li>
                 ))}
               </ul>
-              <h3 className="font-semibold text-ink">Steps</h3>
+              <h3 className="font-semibold text-ink">{t("planSteps")}</h3>
               <ol className="list-decimal pl-5">
                 {scheme.steps.map((step) => (
                   <li key={step}>{step}</li>
@@ -62,7 +76,7 @@ export default function ActionSheet() {
               </ol>
               {source && (
                 <p>
-                  Official source: {source.publisher}. {source.url}. Checked {source.checkedAt}.
+                  {t("planOfficialSource")}: {source.publisher}. {source.url}. Checked {source.checkedAt}.
                 </p>
               )}
             </section>

@@ -62,7 +62,7 @@ export default function Results() {
               {t(section.label)} ({items.length})
             </h2>
             {items.length === 0 ? (
-              <p className="text-sm">None.</p>
+              <p className="text-sm">{t("resultsNoneShort")}</p>
             ) : (
               items.map(({ scheme, detail }) => (
                 <article key={scheme.id} className="flex flex-col gap-2 rounded-md border border-border bg-surface p-4">
@@ -100,11 +100,11 @@ export default function Results() {
                     to={`/schemes/${scheme.id}`}
                     className="inline-flex min-h-11 items-center self-start rounded-md border border-ink px-3 font-semibold text-ink"
                   >
-                    Understand this scheme
+                    {t("resultsUnderstand")}
                   </Link>
                   {section.outcome === "likely_fit" && (
                     <Link to="/plan" className="text-sm underline underline-offset-4">
-                      Open action plan
+                      {t("resultsOpenPlan")}
                     </Link>
                   )}
                 </article>

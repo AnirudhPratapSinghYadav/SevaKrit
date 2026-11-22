@@ -5,7 +5,9 @@ import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
 import { documentRows } from "../domain/readiness";
-import { OUTCOME_LABELS } from "../domain/outcomeLabels";
+import { useLanguage } from "../i18n/Language";
+import type { MessageKey } from "../i18n/messages";
+import type { Outcome } from "../domain/types";
 import { planSchemes } from "../services/evaluatePublished";
 import { buildPersonalFollowUpIcs } from "../services/ics";
 import { addProgress, loadProgress, undoLastProgress } from "../services/progressRepository";
@@ -13,8 +15,16 @@ import { loadFollowUps, saveFollowUp } from "../services/reminderRepository";
 import { buildReminders, type Reminder } from "../services/reminders";
 import { getSources } from "../services/schemeRepository";
 
+const OUTCOME_KEYS: Record<Outcome, MessageKey> = {
+  likely_fit: "likelyFit",
+  needs_information: "needsInformation",
+  likely_mismatch: "likelyMismatch",
+  source_review_needed: "sourceUnderReview",
+};
+
 export default function Plan() {
   const { profile } = useAppState();
+  const { t, lang } = useLanguage();
   const nowIso = new Date().toISOString();
   const actionable = planSchemes(profile, nowIso);
   const [status, setStatus] = useState<{ schemeId: string; message: string } | null>(null);
@@ -30,18 +40,15 @@ export default function Plan() {
   if (actionable.length === 0) {
     return (
       <section className="flex flex-col gap-4">
-        <h1 className="text-3xl font-semibold text-ink">Your plan</h1>
-        <p className="font-semibold">
-          No likely-fit schemes for your confirmed answers yet. Plans are built from evaluated results, not the
-          full catalogue.
-        </p>
+        <h1 className="text-3xl font-semibold text-ink">{t("planTitle")}</h1>
+        <p className="font-semibold">{t("planEmpty")}</p>
         <p>
           <Link to="/results" className="underline underline-offset-4">
-            Review results
+            {t("planReviewResults")}
           </Link>
           {" · "}
           <Link to="/discover" className="underline underline-offset-4">
-            Update your description
+            {t("planUpdate")}
           </Link>
         </p>
       </section>
@@ -127,30 +134,39 @@ export default function Plan() {
 
   return (
     <section className="flex flex-col gap-6">
-      <h1 className="text-3xl font-semibold text-ink">Your plan</h1>
-      <p className="text-sm">
-        Showing schemes with a likely-fit result for your confirmed answers. Saved only in this browser.
-      </p>
+      <h1 className="text-3xl font-semibold text-ink">{t("planTitle")}</h1>
+      <p className="text-sm">{t("planIntro")}</p>
       <p>
         <Link to="/plan/print" className="underline underline-offset-4">
-          Open printable action sheet
+          {t("planPrint")}
         </Link>
       </p>
       <section className="flex flex-col gap-2">
-        <h2 className="text-xl font-semibold text-ink">Reminders</h2>
-        <p className="text-sm">Your browser timezone: {browserTimezone}</p>
-        {!anyDeadline && <p>Official deadline: none verified yet</p>}
+        <h2 className="text-xl font-semibold text-ink">{t("planReminders")}</h2>
+        <p className="text-sm">
+          {lang === "hi" ? "आपका ब्राउज़र समय क्षेत्र" : "Your browser timezone"}: {browserTimezone}
+        </p>
+        {!anyDeadline && (
+          <p>
+            {t("planOfficialDeadline")}: {lang === "hi" ? "अभी सत्यापित नहीं" : "none verified yet"}
+          </p>
+        )}
         {reminders.length === 0 ? (
-          <p>No reminders yet.</p>
+          <p>{t("planNoReminders")}</p>
         ) : (
           <ul className="list-disc space-y-1 pl-5">
             {reminders.map((reminder) => {
-              const title = schemes.find((s) => s.id === reminder.schemeId)?.title.en ?? reminder.schemeId;
+              const scheme = schemes.find((s) => s.id === reminder.schemeId);
+              const title =
+                lang === "hi" && scheme?.title.hi !== undefined
+                  ? scheme.title.hi
+                  : (scheme?.title.en ?? reminder.schemeId);
               const when =
                 reminder.kind === "official_deadline"
                   ? formatIstDate(reminder.dueAt)
                   : new Date(reminder.dueAt).toLocaleString();
-              const label = reminder.kind === "official_deadline" ? "Official deadline" : "Your follow-up";
+              const label =
+                reminder.kind === "official_deadline" ? t("planOfficialDeadline") : t("planYourFollowUp");
               return (
                 <li key={`${reminder.kind}-${reminder.schemeId}`}>
                   {label} for {title}: {when} ({reminder.status})
@@ -163,13 +179,14 @@ export default function Plan() {
       {actionable.map(({ scheme, detail }) => {
         const source = sources.find((item) => scheme.sourceIds.includes(item.id));
         const followInputId = `follow-up-${scheme.id}`;
+        const title = lang === "hi" && scheme.title.hi !== undefined ? scheme.title.hi : scheme.title.en;
         return (
           <article key={scheme.id} className="flex flex-col gap-4 rounded-md border border-sage p-4">
-            <h2 className="text-xl font-semibold text-ink">{scheme.title.en}</h2>
+            <h2 className="text-xl font-semibold text-ink">{title}</h2>
             <p className="text-sm">
-              Result: {OUTCOME_LABELS[detail.assessment.outcome]} ·{" "}
+              {t("planResult")}: {t(OUTCOME_KEYS[detail.assessment.outcome])} ·{" "}
               <Link to={`/schemes/${scheme.id}`} className="underline underline-offset-4">
-                Understand this scheme
+                {t("resultsUnderstand")}
               </Link>
             </p>
             <p className="text-sm">
@@ -179,7 +196,7 @@ export default function Plan() {
                 : ""}
             </p>
             <section className="flex flex-col gap-2">
-              <h3 className="font-semibold text-ink">Documents</h3>
+              <h3 className="font-semibold text-ink">{t("planDocuments")}</h3>
               <DocumentChecklist documents={scheme.documents} />
               <ul className="text-sm">
                 {documentRows(scheme.documents).map((row) => (
@@ -193,7 +210,7 @@ export default function Plan() {
               </ul>
             </section>
             <section className="flex flex-col gap-2">
-              <h3 className="font-semibold text-ink">Steps</h3>
+              <h3 className="font-semibold text-ink">{t("planSteps")}</h3>
               <StepTimeline steps={scheme.steps} />
             </section>
             <p>
@@ -204,7 +221,7 @@ export default function Plan() {
                   rel="noopener noreferrer"
                   className="inline-flex min-h-11 items-center text-terracotta-text underline underline-offset-4"
                 >
-                  Official source
+                  {t("planOfficialSource")}
                 </a>
               ) : (
                 "Official link not loaded yet."
@@ -215,14 +232,14 @@ export default function Plan() {
               onClick={() => recordApplied(scheme.id)}
               className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
             >
-              I have applied (my record only, not an official status)
+              {t("planApplied")}
             </button>
             <button
               type="button"
               onClick={() => undoApplied(scheme.id)}
               className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
             >
-              Undo last self-reported step
+              {t("planUndo")}
             </button>
             <p className="text-sm">
               Self-reported steps saved in this browser:{" "}
@@ -230,9 +247,9 @@ export default function Plan() {
             </p>
             {status?.schemeId === scheme.id && <p role="status">{status.message}</p>}
             <section className="flex flex-col gap-2">
-              <h3 className="font-semibold text-ink">Personal follow-up</h3>
+              <h3 className="font-semibold text-ink">{t("planPersonalFollowUp")}</h3>
               <label htmlFor={followInputId}>
-                Follow-up date and time (your timezone: {browserTimezone})
+                {t("planFollowUpLabel")}: {browserTimezone})
               </label>
               <input
                 id={followInputId}
@@ -248,20 +265,18 @@ export default function Plan() {
                 onClick={() => recordFollowUp(scheme.id)}
                 className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
               >
-                Save follow-up
+                {t("planSaveFollowUp")}
               </button>
               <button
                 type="button"
                 onClick={() => downloadIcs(scheme.id, scheme.title.en)}
                 className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
               >
-                Download calendar file (.ics)
+                {t("planDownloadIcs")}
               </button>
               <p className="text-sm">
-                Official deadline:{" "}
-                {scheme.deadline === null
-                  ? "none verified on this record. The calendar file is only your personal follow-up."
-                  : scheme.deadline}
+                {t("planOfficialDeadline")}:{" "}
+                {scheme.deadline === null ? t("planNoOfficialDeadline") : scheme.deadline}
               </p>
               {followUpInput?.schemeId === scheme.id && followUpInput.message !== "" && (
                 <p role="status">{followUpInput.message}</p>

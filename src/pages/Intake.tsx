@@ -108,14 +108,14 @@ export default function Intake() {
 
       {proposed.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold text-ink">Details we found</h2>
+          <h2 className="text-xl font-semibold text-ink">{t("intakeFound")}</h2>
           <FactReview proposals={proposed} onConfirm={confirmFact} onRemove={removeProposal} />
         </section>
       )}
 
       {(confirmedKeys.length > 0 || Object.keys(followUpAnswers).length > 0 || unknownFacts.length > 0) && (
         <section className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold text-ink">Confirmed details</h2>
+          <h2 className="text-xl font-semibold text-ink">{t("intakeConfirmed")}</h2>
           <ul className="flex flex-col gap-1">
             {confirmedKeys.map((key) => (
               <li key={key}>
@@ -129,7 +129,7 @@ export default function Intake() {
             ))}
             {unknownFacts.map((key) => (
               <li key={`unknown-${key}`}>
-                {FACT_LABELS[key as FactKey] ?? key}: I don't know
+                {FACT_LABELS[key as FactKey] ?? key}: {t("dontKnow")}
               </li>
             ))}
           </ul>
@@ -138,9 +138,9 @@ export default function Intake() {
 
       {confirmedKeys.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold text-ink">Follow-up questions</h2>
+          <h2 className="text-xl font-semibold text-ink">{t("intakeFollowUps")}</h2>
           {questions.length === 0 ? (
-            <p>No further questions for the published rules with your confirmed details.</p>
+            <p>{t("intakeNoMoreQuestions")}</p>
           ) : (
             questions.map((question) => {
               const answered =
