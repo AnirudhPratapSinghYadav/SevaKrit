@@ -10,7 +10,12 @@ describe("Home page smoke test", () => {
         <Home />
       </MemoryRouter>,
     );
-    expect(screen.getByText(/Find benefits your household may qualify for/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "You shouldn't need to know a scheme's name to find a way forward.",
+      }),
+    ).toBeInTheDocument();
   });
 });
 

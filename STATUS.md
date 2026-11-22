@@ -181,3 +181,24 @@ Status tags: VERIFIED (read in code or run), REFUTED, UNCLEAR, BLOCKED.
 
 ### Next permitted action
 - Phase 4+ per MASTER_BUILD_PROMPT (do not start Phase 6 landing polish until earlier gates clear), or adversarial QA / second scheme evidence.
+
+## Checkpoint — readiness, reminders, print, persistence (HEAD after this commit)
+
+Started from `db18866` (matches `origin/main`). PS5 PDF not in the workspace. Nagarakshak not re-cloned this session.
+
+### Shipped in this slice
+- Confirmed answers persist in `localStorage` (`haqpath.household.v1`). Narrative is not stored.
+- Sensitive-looking ID / account / OTP text is refused before parsing and is not saved.
+- Plan: likely-fit only; document rows say verify-with-department when the source did not list documents; self-reported step + undo; personal `.ics` download distinct from an official deadline (still `null` on PM-JANMAN housing).
+- `/plan/print` action sheet, `/assisted` reset, `/help`, `/how-it-works`, translated shell (en/hi) with a non-certified-translation note, privacy clear-data button.
+- Smoke assertion updated to the live Home H1. Stale “Met:” and old Home CTA selectors updated to the current UI.
+
+### Checks run this session
+- typecheck PASS, lint PASS (`.codebenders` ignored), unit **136/136** PASS.
+- Playwright after a fresh preview build: journey + phase1 + phase2 scheme-detail **19/19** PASS (one earlier route failure was a stale preview on port 4173, then a stale CTA name; both fixed and re-run).
+
+### Still blocked or partial
+- **BLOCKED:** Supabase CLI not installed, no `.env`, migrations `001–003` not applied. Docker is installed but `003` depends on `auth.users`, so RLS was not executed. Reviewer UI remains read-only. Do not treat SQL files as a working backend.
+- **PARTIAL:** Hindi covers the shell and 404, not every chapter or scheme sentence. Assisted mode reuses the same intake; it is not a separate engine.
+- **Not deployed.** No hosting config or credentials in the repo.
+- Aahar Anudan and dairy remain draft. No new scheme rules invented.

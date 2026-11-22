@@ -42,6 +42,16 @@ describe("Intake", () => {
     expect((screen.getByLabelText("Tell us about your household in your own words") as HTMLTextAreaElement).value).toBe(EXAMPLE);
   });
 
+  it("refuses a description that looks like an identity number", () => {
+    renderIntake();
+    fireEvent.change(screen.getByLabelText("Tell us about your household in your own words"), {
+      target: { value: "Baiga family in Dindori, Aadhaar 1234 5678 9012" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
+    expect(screen.getByRole("status").textContent).toContain("Remove it");
+    expect(screen.queryByText("Details we found")).toBeNull();
+  });
+
   it("shows a message for empty input", () => {
     renderIntake();
     fireEvent.click(screen.getByRole("button", { name: "Read my description" }));

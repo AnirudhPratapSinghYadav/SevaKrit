@@ -4,6 +4,7 @@ import FactReview from "../components/FactReview";
 import FollowUpQuestion from "../components/FollowUpQuestion";
 import { useAppState } from "../context/AppState";
 import { FACT_LABELS, EXAMPLE_NARRATIVE, MAX_NARRATIVE_LENGTH, type FactKey } from "../services/parseNarrative";
+import { scanSensitiveInput } from "../services/sensitiveInput";
 import { getRuleVersions } from "../services/schemeRepository";
 
 export default function Intake() {
@@ -35,6 +36,11 @@ export default function Intake() {
     }
     if (narrative.length > MAX_NARRATIVE_LENGTH) {
       setMessage(`Please keep your description under ${MAX_NARRATIVE_LENGTH} characters.`);
+      return;
+    }
+    const sensitive = scanSensitiveInput(narrative);
+    if (sensitive.blocked) {
+      setMessage(sensitive.message);
       return;
     }
     const facts = proposeFacts(narrative);

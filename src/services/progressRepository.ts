@@ -33,6 +33,20 @@ export function addProgress(schemeId: string, kind: string, nowIso: string): Sav
   }
 }
 
+export function undoLastProgress(schemeId: string): SaveResult {
+  try {
+    const current = loadProgress();
+    const index = [...current].reverse().findIndex((event) => event.schemeId === schemeId);
+    if (index === -1) return { ok: false, error: "There is no saved step to undo for this scheme." };
+    const removeAt = current.length - 1 - index;
+    const next = current.filter((_, i) => i !== removeAt);
+    globalThis.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
+    return { ok: true };
+  } catch {
+    return { ok: false, error: "This browser could not update your record." };
+  }
+}
+
 export function clearProgress(): void {
   try {
     globalThis.localStorage.removeItem(PROGRESS_STORAGE_KEY);

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { addProgress, clearProgress, loadProgress, PROGRESS_STORAGE_KEY } from "../services/progressRepository";
+import { addProgress, clearProgress, loadProgress, PROGRESS_STORAGE_KEY, undoLastProgress } from "../services/progressRepository";
 
 // Synthetic in-memory Storage used in place of the browser's localStorage.
 function mockStorage() {
@@ -57,6 +57,15 @@ describe("progressRepository", () => {
     data.set(PROGRESS_STORAGE_KEY, JSON.stringify([{ schemeId: 1, enteredBy: "someone-else" }]));
     vi.stubGlobal("localStorage", storage);
     expect(loadProgress()).toEqual([]);
+  });
+
+  it("undo removes only the latest event for that scheme", () => {
+    const { storage } = mockStorage();
+    vi.stubGlobal("localStorage", storage);
+    addProgress("synthetic-scheme", "applied", NOW);
+    addProgress("other", "applied", NOW);
+    expect(undoLastProgress("synthetic-scheme").ok).toBe(true);
+    expect(loadProgress().map((event) => event.schemeId)).toEqual(["other"]);
   });
 
   it("returns ok false when setItem throws", () => {

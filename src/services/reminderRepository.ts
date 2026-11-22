@@ -45,3 +45,11 @@ export function saveFollowUp(schemeId: string, dueAt: string, timezone: string):
     return { ok: false, error: "This browser could not save your follow-up. Storage may be full or turned off." };
   }
 }
+
+export function clearFollowUps(): void {
+  try {
+    globalThis.localStorage.removeItem(REMINDER_STORAGE_KEY);
+  } catch {
+    // Nothing to clear if storage is unavailable.
+  }
+}

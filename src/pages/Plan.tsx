@@ -4,9 +4,11 @@ import DocumentChecklist from "../components/DocumentChecklist";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
+import { documentRows } from "../domain/readiness";
 import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import { planSchemes } from "../services/evaluatePublished";
-import { addProgress } from "../services/progressRepository";
+import { buildPersonalFollowUpIcs } from "../services/ics";
+import { addProgress, loadProgress, undoLastProgress } from "../services/progressRepository";
 import { loadFollowUps, saveFollowUp } from "../services/reminderRepository";
 import { buildReminders, type Reminder } from "../services/reminders";
 import { getSources } from "../services/schemeRepository";
@@ -16,6 +18,7 @@ export default function Plan() {
   const nowIso = new Date().toISOString();
   const actionable = planSchemes(profile, nowIso);
   const [status, setStatus] = useState<{ schemeId: string; message: string } | null>(null);
+  const [events, setEvents] = useState(loadProgress);
   const [followUps, setFollowUps] = useState(loadFollowUps);
   const [followUpInput, setFollowUpInput] = useState<{
     schemeId: string;
@@ -66,6 +69,42 @@ export default function Plan() {
         ? "Saved in your record in this browser. This is not an official status."
         : `Not saved. ${result.error}`,
     });
+    if (result.ok) setEvents(loadProgress());
+  }
+
+  function undoApplied(schemeId: string) {
+    const result = undoLastProgress(schemeId);
+    setStatus({
+      schemeId,
+      message: result.ok ? "Last self-reported step removed from this browser." : result.error,
+    });
+    if (result.ok) setEvents(loadProgress());
+  }
+
+  function downloadIcs(schemeId: string, title: string) {
+    const follow = followUps.find((item) => item.schemeId === schemeId);
+    if (!follow) {
+      setFollowUpInput({
+        schemeId,
+        local: followUpInput?.schemeId === schemeId ? followUpInput.local : "",
+        message: "Save a personal follow-up date before downloading a calendar file.",
+      });
+      return;
+    }
+    const ics = buildPersonalFollowUpIcs({
+      uid: `haqpath-${schemeId}-${follow.dueAt}@haqpath.local`,
+      summary: `HaqPath personal follow-up: ${title}`,
+      description: "Personal reminder saved in this browser. Not an official government deadline.",
+      startIso: follow.dueAt,
+      nowIso: new Date().toISOString(),
+    });
+    const blob = new Blob([ics], { type: "text/calendar" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "haqpath-follow-up.ics";
+    anchor.click();
+    URL.revokeObjectURL(url);
   }
 
   function recordFollowUp(schemeId: string) {
@@ -90,7 +129,12 @@ export default function Plan() {
     <section className="flex flex-col gap-6">
       <h1 className="text-3xl font-semibold text-ink">Your plan</h1>
       <p className="text-sm">
-        Showing schemes with a likely-fit result for your confirmed answers. Demo: saved only in this browser.
+        Showing schemes with a likely-fit result for your confirmed answers. Saved only in this browser.
+      </p>
+      <p>
+        <Link to="/plan/print" className="underline underline-offset-4">
+          Open printable action sheet
+        </Link>
       </p>
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">Reminders</h2>
@@ -137,6 +181,16 @@ export default function Plan() {
             <section className="flex flex-col gap-2">
               <h3 className="font-semibold text-ink">Documents</h3>
               <DocumentChecklist documents={scheme.documents} />
+              <ul className="text-sm">
+                {documentRows(scheme.documents).map((row) => (
+                  <li key={row.text}>
+                    Status:{" "}
+                    {row.readiness === "verify_with_department"
+                      ? "Verify with the department — the source did not list a required document set"
+                      : "Listed on the reviewed source"}
+                  </li>
+                ))}
+              </ul>
             </section>
             <section className="flex flex-col gap-2">
               <h3 className="font-semibold text-ink">Steps</h3>
@@ -163,6 +217,17 @@ export default function Plan() {
             >
               I have applied (my record only, not an official status)
             </button>
+            <button
+              type="button"
+              onClick={() => undoApplied(scheme.id)}
+              className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
+            >
+              Undo last self-reported step
+            </button>
+            <p className="text-sm">
+              Self-reported steps saved in this browser:{" "}
+              {events.filter((event) => event.schemeId === scheme.id).length}
+            </p>
             {status?.schemeId === scheme.id && <p role="status">{status.message}</p>}
             <section className="flex flex-col gap-2">
               <h3 className="font-semibold text-ink">Personal follow-up</h3>
@@ -185,6 +250,19 @@ export default function Plan() {
               >
                 Save follow-up
               </button>
+              <button
+                type="button"
+                onClick={() => downloadIcs(scheme.id, scheme.title.en)}
+                className="min-h-11 self-start rounded-md border border-ink px-4 text-ink"
+              >
+                Download calendar file (.ics)
+              </button>
+              <p className="text-sm">
+                Official deadline:{" "}
+                {scheme.deadline === null
+                  ? "none verified on this record. The calendar file is only your personal follow-up."
+                  : scheme.deadline}
+              </p>
               {followUpInput?.schemeId === scheme.id && followUpInput.message !== "" && (
                 <p role="status">{followUpInput.message}</p>
               )}

@@ -1,6 +1,8 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { HouseholdProfile } from "../domain/types";
 import { coerceFollowUpAnswer } from "../services/coerceFact";
+import { loadHousehold, saveHousehold } from "../services/householdStore";
+import { clearHouseholdData } from "../services/localData";
 import { parseNarrative, type ProposedFact } from "../services/parseNarrative";
 
 type FactValue = HouseholdProfile["confirmedFacts"][string];
@@ -19,16 +21,19 @@ export interface AppStateValue {
   confirmFact: (factKey: string) => void;
   removeProposal: (factKey: string) => void;
   answerFollowUp: (factKey: string, answer: string) => string | null;
+  /** Clears confirmed answers in this browser. Language preference is kept. */
+  resetHousehold: () => void;
 }
 
 const AppStateContext = createContext<AppStateValue | null>(null);
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
+  const stored = loadHousehold();
   const [narrative, setNarrative] = useState("");
   const [proposed, setProposed] = useState<ProposedFact[]>([]);
-  const [confirmedFacts, setConfirmedFacts] = useState<Record<string, FactValue>>({});
-  const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, FactValue>>({});
-  const [unknownFacts, setUnknownFacts] = useState<string[]>([]);
+  const [confirmedFacts, setConfirmedFacts] = useState<Record<string, FactValue>>(stored.confirmedFacts);
+  const [followUpAnswers, setFollowUpAnswers] = useState<Record<string, FactValue>>(stored.followUpAnswers);
+  const [unknownFacts, setUnknownFacts] = useState<string[]>(stored.unknownFacts);
 
   const proposeFacts = useCallback((text: string): ProposedFact[] => {
     const facts = parseNarrative(text);
@@ -68,6 +73,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     return null;
   }, []);
 
+  const resetHousehold = useCallback(() => {
+    setNarrative("");
+    setProposed([]);
+    setConfirmedFacts({});
+    setFollowUpAnswers({});
+    setUnknownFacts([]);
+    clearHouseholdData();
+  }, []);
+
+  useEffect(() => {
+    saveHousehold({ confirmedFacts, followUpAnswers, unknownFacts });
+  }, [confirmedFacts, followUpAnswers, unknownFacts]);
+
   const profile = useMemo<HouseholdProfile>(
     () => ({
       confirmedFacts: { ...confirmedFacts, ...followUpAnswers },
@@ -89,6 +107,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       confirmFact,
       removeProposal,
       answerFollowUp,
+      resetHousehold,
     }),
     [
       narrative,
@@ -101,6 +120,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       confirmFact,
       removeProposal,
       answerFollowUp,
+      resetHousehold,
     ],
   );
 

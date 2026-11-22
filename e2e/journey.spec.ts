@@ -50,7 +50,7 @@ test("citizen path: confirm sample facts, answer follow-ups, likely fit + scheme
   await expect(page.getByText("Likely fit").first()).toBeVisible();
   await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
   await page.getByText("Rule trace").first().click();
-  await expect(page.getByText(/Met:/).first()).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Met", exact: true }).first()).toBeVisible();
 
   await page.getByRole("link", { name: "Understand this scheme" }).first().click();
   await expect(page).toHaveURL(/\/schemes\/pm-janman-housing-mp$/);

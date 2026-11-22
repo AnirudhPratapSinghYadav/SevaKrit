@@ -1,4 +1,10 @@
+import { useState } from "react";
+import { useAppState } from "../context/AppState";
+
 export default function Privacy() {
+  const { resetHousehold } = useAppState();
+  const [cleared, setCleared] = useState(false);
+
   return (
     <article className="flex flex-col gap-6">
       <h1 className="text-3xl font-semibold text-ink">Privacy and data handling</h1>
@@ -6,8 +12,9 @@ export default function Privacy() {
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">What we store</h2>
         <p>
-          Your answers and your progress are stored only in this browser in demo mode. Nothing is sent
-          to a server.
+          Confirmed answers, self-reported steps, and personal follow-up dates are stored in this
+          browser only. The typed story is not saved after you leave the page. Nothing is sent to a
+          server in this demo.
         </p>
       </section>
 
@@ -19,6 +26,7 @@ export default function Privacy() {
           <li>Bank account numbers</li>
           <li>OTPs</li>
         </ul>
+        <p>If a description looks like it contains one of these, it is not read or saved.</p>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -40,14 +48,25 @@ export default function Privacy() {
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">Deleting your data</h2>
         <p>
-          A &ldquo;Clear this browser&rsquo;s data&rdquo; option will arrive in a later phase. It is not
-          available in this demo yet, so you can clear the data yourself through your browser&rsquo;s
-          site settings.
+          This removes confirmed answers, self-reported steps, and personal reminders from this
+          browser. The language choice is kept.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            resetHousehold();
+            setCleared(true);
+          }}
+          className="min-h-11 self-start rounded-md border border-ink px-4 font-semibold text-ink"
+        >
+          Clear this browser&apos;s household data
+        </button>
+        {cleared && <p role="status">Household data in this browser was cleared.</p>}
       </section>
 
-      <p className="text-sm">Hindi labels for the core journey are not yet reviewed; English is shown.</p>
+      <p className="text-sm">
+        Interface Hindi, where shown, is a product translation and not a certified government translation.
+      </p>
     </article>
   );
 }
-

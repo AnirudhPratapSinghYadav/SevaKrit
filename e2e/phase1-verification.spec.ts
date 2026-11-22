@@ -2,7 +2,19 @@ import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROUTES = ["/", "/discover", "/results", "/plan", "/privacy", "/review", "/schemes/pm-janman-housing-mp"] as const;
+const ROUTES = [
+  "/",
+  "/discover",
+  "/results",
+  "/plan",
+  "/plan/print",
+  "/privacy",
+  "/review",
+  "/help",
+  "/how-it-works",
+  "/assisted",
+  "/schemes/pm-janman-housing-mp",
+] as const;
 const VIEWPORTS = [
   { width: 320, height: 640 },
   { width: 360, height: 740 },
@@ -129,10 +141,10 @@ test.describe("Phase 1 browser verification", () => {
 
     // CTA links from home
     await page.goto("/");
-    await page.getByRole("link", { name: "Start with a description" }).click();
+    await page.getByRole("link", { name: "Find possible benefits" }).first().click();
     await expect(page).toHaveURL(/\/discover$/);
     await page.goto("/");
-    await page.getByRole("link", { name: "How your data is handled" }).click();
+    await page.getByRole("link", { name: "Read our privacy and limits" }).click();
     await expect(page).toHaveURL(/\/privacy$/);
 
     // Nav links
