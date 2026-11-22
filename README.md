@@ -1,10 +1,18 @@
 # HaqPath by SevaKrit
 
-> **In one sentence:** HaqPath helps families in Madhya Pradesh understand which government benefits *might* fit them, why the rules say that, and what to prepare next — without filling Aadhaar, bank details, or OTPs into this website.
+<p align="center">
+  <img src="public/images/story/hero-village.webp" alt="HaqPath cinematic landscape" width="920" />
+</p>
 
-**Not a government portal. Not an application form. Not a guarantee of approval.**
+**Start with what you know.** Describe a Baiga, Bharia or Sahariya household in Madhya Pradesh → see possible benefits with rule evidence → prepare papers and next steps.
 
-Final decisions always belong to the department.
+> **In one sentence:** HaqPath helps families understand which published benefits *might* fit them, why the rules say that, and what to prepare next — without Aadhaar, bank details, or OTPs on this site.
+
+Independent readiness guide — **not a government portal**. Decisions stay with the department. Details live on the in-app Privacy page.
+
+![Tool pictograms](public/images/ui/tools-pictograms.jpg)
+
+**License:** [MIT](./LICENSE)
 
 ---
 
