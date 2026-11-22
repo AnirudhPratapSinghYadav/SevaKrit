@@ -15,87 +15,84 @@ export default function Home() {
   const hi = lang === "hi";
 
   return (
-    <div className="atmosphere relative overflow-x-clip">
-      <div className="orb orb-a pointer-events-none absolute left-0 top-20 h-48 w-48 max-w-[40vw] bg-[radial-gradient(circle,#cbb97c_0%,transparent_70%)]" />
-      <div className="orb orb-b pointer-events-none absolute right-0 top-[32rem] h-52 w-52 max-w-[40vw] bg-[radial-gradient(circle,#173b35_0%,transparent_70%)]" />
+    <div className="relative overflow-x-clip">
+      {/* Full-viewport cinematic hero — edge-to-edge image plane */}
+      <section className="relative left-1/2 right-1/2 flex min-h-[100svh] w-screen -translate-x-1/2 items-end overflow-hidden">
+        <img
+          src="/images/story/hero-village.webp"
+          width={1600}
+          height={900}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-[50%_42%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#061a16]/96% via-[#0a2a24]/82% to-[#0a2a24]/35%" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#061a16] via-transparent to-[#061a16]/40%" />
+        <div className="orb orb-a pointer-events-none absolute left-[8%] top-[18%] h-56 w-56 bg-[radial-gradient(circle,#d4b45a_0%,transparent_70%)]" />
+        <div className="orb orb-b pointer-events-none absolute bottom-[12%] right-[10%] h-64 w-64 bg-[radial-gradient(circle,#a84a1f_0%,transparent_70%)]" />
 
-      {/* Immersive hero — one composition */}
-      <section className="relative mx-auto grid min-h-[88vh] w-full max-w-page grid-cols-1 items-center gap-10 px-4 pb-16 pt-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14 lg:px-6 lg:pt-6">
-        <div className="relative z-10 flex flex-col gap-6">
-          <p className="reveal text-sm font-semibold uppercase tracking-[0.22em] text-accent-earth">
-            {hi ? "हक़पथ · सेवाकृत" : "HaqPath · by SevaKrit"}
-          </p>
-          <h1 className="reveal reveal-delay-1 font-display text-[2.6rem] font-semibold leading-[1.08] text-ink md:text-6xl lg:text-[4.1rem]">
-            {hi
-              ? "किसी योजना का नाम जाने बिना भी आगे का रास्ता मिलना चाहिए।"
-              : "You shouldn't need to know a scheme's name to find a way forward."}
-          </h1>
-          <p className="reveal reveal-delay-2 max-w-xl text-lg text-ink-soft md:text-xl">
-            {hi
-              ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए — संभावित सहायता, स्पष्ट नियम-साक्ष्य, और अगला व्यावहारिक कदम। सरकारी पोर्टल नहीं।"
-              : "For Baiga, Bharia and Sahariya households in Madhya Pradesh — possible benefits, explainable rules, and a practical next step. Not a government portal."}
-          </p>
-          <div className="reveal reveal-delay-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Link
-              to="/discover"
-              className="btn-primary-glow inline-flex min-h-12 items-center justify-center rounded-full px-7 font-semibold text-canvas"
-            >
-              {hi ? "संभावित सहायता देखें" : "Find possible benefits"}
-            </Link>
-            <Link
-              to="/workspace"
-              className="glass-panel inline-flex min-h-12 items-center justify-center rounded-full px-7 font-semibold text-ink"
-            >
-              {hi ? "कार्यक्षेत्र खोलें" : "Open workspace"}
-            </Link>
-            <Link
-              to="#story"
-              className="inline-flex min-h-12 items-center justify-center px-3 font-semibold text-accent-earth underline-offset-4 hover:underline"
-            >
-              {hi ? "कहानी देखें" : "See the story"}
-            </Link>
+        <div className="relative z-10 mx-auto grid w-full max-w-page grid-cols-1 items-end gap-10 px-4 pb-16 pt-28 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:pb-20">
+          <div className="flex flex-col gap-6 text-canvas">
+            <p className="reveal text-sm font-semibold uppercase tracking-[0.28em] text-accent-gold">
+              {hi ? "हक़पथ" : "HaqPath"}
+            </p>
+            <h1 className="reveal reveal-delay-1 font-display text-[2.75rem] font-semibold leading-[1.05] md:text-6xl lg:text-[4.25rem]">
+              {hi
+                ? "योजना का नाम जाने बिना भी आगे का रास्ता।"
+                : "A path forward without knowing the scheme’s name."}
+            </h1>
+            <p className="reveal reveal-delay-2 max-w-xl text-lg text-canvas/85 md:text-xl">
+              {hi
+                ? "मध्य प्रदेश के बैगा, भारिया और सहरिया परिवारों के लिए स्रोत-बद्ध संभावित सहायता और अगला व्यावहारिक कदम। सरकारी पोर्टल नहीं।"
+                : "Source-backed likely fits and a practical next step for Baiga, Bharia and Sahariya households in Madhya Pradesh. Not a government portal."}
+            </p>
+            <div className="reveal reveal-delay-3 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link
+                to="/discover"
+                className="btn-gold inline-flex min-h-12 items-center justify-center rounded-full px-8 font-semibold"
+              >
+                {hi ? "संभावित सहायता देखें" : "Find likely fits"}
+              </Link>
+              <Link
+                to="/workspace"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-canvas/35 bg-white/10 px-8 font-semibold text-canvas backdrop-blur-md"
+              >
+                {hi ? "कार्यक्षेत्र" : "Open workspace"}
+              </Link>
+              <Link
+                to="#story"
+                className="inline-flex min-h-12 items-center justify-center px-3 font-semibold text-accent-gold underline-offset-4 hover:underline"
+              >
+                {hi ? "कहानी" : "Read the story"}
+              </Link>
+            </div>
+            <p className="reveal reveal-delay-4 text-sm text-canvas/65">
+              {hi
+                ? "परिणाम “संभावित” हैं। अंतिम निर्णय विभाग का।"
+                : "Outcomes say likely. The department still decides."}
+            </p>
           </div>
-          <p className="reveal reveal-delay-4 text-sm text-ink-soft">
-            {hi
-              ? "परिणाम “संभावित” हैं — अंतिम निर्णय विभाग का रहता है।"
-              : "Outcomes say “likely” — the department still decides."}
-          </p>
-        </div>
 
-        {/* CSS 3D illustrative stage — inset so transforms stay in-bounds */}
-        <div className="hero-stage relative mx-auto w-full max-w-xl overflow-hidden px-3 pb-10 pt-4 lg:pb-4">
-          <div className="absolute inset-10 rounded-[40%] bg-[radial-gradient(circle_at_50%_40%,rgba(203,185,124,0.35),transparent_65%)] blur-2xl" />
-          <figure className="float-3d story-frame relative z-20 mx-auto aspect-[4/3] w-[82%]">
-            <img
-              src="/images/story/hero-village.webp"
-              width={768}
-              height={512}
-              alt={
-                hi
-                  ? "ग्रामीण परिदृश्य का उदाहरण चित्र"
-                  : "Illustrative rural landscape with a winding road and greenery"
-              }
-              fetchPriority="high"
-              decoding="async"
-              className="h-full w-full object-cover object-[50%_54%]"
-            />
-          </figure>
-          <figure className="float-3d-alt story-frame absolute bottom-6 right-4 z-10 hidden w-[52%] aspect-[4/3] sm:block">
-            <img
-              src="/images/story/household-story.webp"
-              width={640}
-              height={480}
-              alt={hi ? "परिवार की बातचीत का चित्रण" : "Illustration of a family talking outside a rural home"}
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover object-[50%_45%]"
-            />
-          </figure>
-          <div className="glass-panel float-chip absolute left-2 top-8 z-30 hidden max-w-[11rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink sm:block">
-            {hi ? "नियम + स्रोत दिखते हैं" : "Rules + sources shown"}
-          </div>
-          <div className="glass-panel float-chip-alt absolute bottom-16 left-6 z-30 hidden max-w-[10rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink md:block">
-            {hi ? "आधार / OTP नहीं" : "No Aadhaar / OTP"}
+          <div className="hero-stage relative hidden min-h-[20rem] lg:block">
+            <figure className="float-3d story-frame absolute right-0 top-0 aspect-[4/3] w-[78%]">
+              <img
+                src="/images/story/household-story.webp"
+                width={640}
+                height={480}
+                alt={hi ? "परिवार की बातचीत का चित्रण" : "Illustration of a family talking outside a rural home"}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover object-[50%_45%]"
+              />
+            </figure>
+            <div className="glass-panel float-chip absolute bottom-8 left-0 z-30 max-w-[12rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink">
+              {hi ? "नियम + स्रोत दिखते हैं" : "Rules and sources shown"}
+            </div>
+            <div className="glass-panel float-chip-alt absolute right-4 top-8 z-30 max-w-[10rem] rounded-2xl px-3 py-2 text-xs font-semibold text-ink">
+              {hi ? "आधार / OTP नहीं" : "No Aadhaar / OTP"}
+            </div>
           </div>
         </div>
       </section>
