@@ -159,10 +159,25 @@ Status tags: VERIFIED (read in code or run), REFUTED, UNCLEAR, BLOCKED.
 - **D: PASS (partial)** — Results cite CM Helpline URL via SourceBadge; no confident result without verified source. RLS/backend still **BLOCKED** (no Supabase credentials). Union MoTA page still unverified (500).
 
 ### Outstanding P0/P1
-- Plan page still lists published schemes without filtering by evaluation (pre-existing).
 - Document requirements not on source → honest “not stated” only.
 - Reviewer publish/auth still absent.
 - Aahar Anudan / dairy remain draft/unverified.
 
+## Phase 3 — Citizen intake / results / scheme detail (2026-11-22)
+
+### Changes
+- `/discover` is the canonical intake route; `/intake` redirects. Home CTA and AppShell nav updated.
+- Follow-ups use Yes/No/I don’t know (and Rural/Urban, Kutcha/Pucca) choice buttons; “I don’t know” stays in `unknownFacts`.
+- Answered follow-ups remain visible for review; confirmed details list includes follow-up and unknown answers.
+- `/schemes/:slug` scheme detail with rule traces, sources, documents, steps.
+- Results link to scheme detail; Plan uses `planSchemes()` → **likely_fit only** (not the catalogue).
+- Unit: `evaluatePublished.test.ts`; intake Y/N/K coverage. E2E journey + phase1 routes updated.
+
+### Checks A–D
+- **A: PASS** — typecheck, lint, **102/102** unit tests, build.
+- **B: PASS** — Playwright **13/13**: discover redirect, incomplete → plan empty, citizen path → likely fit → scheme detail → plan with likely-fit only.
+- **C: PASS** — Phase 1 viewport/skip/focus suite green with `/discover` + scheme detail route.
+- **D: PASS (partial)** — No new secrets; scheme detail cites sources. Backend/RLS still **BLOCKED**.
+
 ### Next permitted action
-- Phase 3: typed intake UX polish (`/discover` routes if renaming), stronger Yes/No/I don’t know controls, SchemeDetail route; or fix Plan to show evaluated matches only.
+- Phase 4+ per MASTER_BUILD_PROMPT (do not start Phase 6 landing polish until earlier gates clear), or adversarial QA / second scheme evidence.

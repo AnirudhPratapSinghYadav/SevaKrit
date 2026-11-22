@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
 
-const ROUTES = ["/", "/intake", "/results", "/plan", "/privacy", "/review"] as const;
+const ROUTES = ["/", "/discover", "/results", "/plan", "/privacy", "/review", "/schemes/pm-janman-housing-mp"] as const;
 const VIEWPORTS = [
   { width: 320, height: 640 },
   { width: 360, height: 740 },
@@ -119,7 +119,10 @@ test.describe("Phase 1 browser verification", () => {
       expect(audits[route].landmarks).toContain("MAIN");
       expect(audits[route].landmarks).toContain("FOOTER");
       await page.screenshot({
-        path: path.join(SHOT_DIR, `route-${route === "/" ? "home" : route.slice(1)}.png`),
+        path: path.join(
+          SHOT_DIR,
+          `route-${route === "/" ? "home" : route.slice(1).replaceAll("/", "-")}.png`,
+        ),
         fullPage: true,
       });
     }
@@ -127,7 +130,7 @@ test.describe("Phase 1 browser verification", () => {
     // CTA links from home
     await page.goto("/");
     await page.getByRole("link", { name: "Start with a description" }).click();
-    await expect(page).toHaveURL(/\/intake$/);
+    await expect(page).toHaveURL(/\/discover$/);
     await page.goto("/");
     await page.getByRole("link", { name: "How your data is handled" }).click();
     await expect(page).toHaveURL(/\/privacy$/);
@@ -135,7 +138,7 @@ test.describe("Phase 1 browser verification", () => {
     // Nav links
     await page.goto("/");
     for (const item of [
-      { name: "Describe household", path: "/intake" },
+      { name: "Describe household", path: "/discover" },
       { name: "Results", path: "/results" },
       { name: "Plan", path: "/plan" },
       { name: "Privacy", path: "/privacy" },
@@ -143,6 +146,10 @@ test.describe("Phase 1 browser verification", () => {
       await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: item.name }).click();
       await expect(page).toHaveURL(new RegExp(`${item.path}$`));
     }
+
+    // Legacy alias
+    await page.goto("/intake");
+    await expect(page).toHaveURL(/\/discover$/);
 
     expect(browserErrors, `console/page errors: ${browserErrors.join(" | ")}`).toEqual([]);
     expect(httpFailures, `HTTP failures: ${httpFailures.join(" | ")}`).toEqual([]);
@@ -203,7 +210,7 @@ test.describe("Phase 1 browser verification", () => {
 
   test("focus ring visible with brand contrast on keyboard controls", async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
-    await page.goto("/intake");
+    await page.goto("/discover");
     const textarea = page.getByLabel("Tell us about your household in your own words");
     await textarea.focus();
     const focusStyles = await textarea.evaluate((el) => {

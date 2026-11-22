@@ -1,14 +1,19 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import DocumentChecklist from "../components/DocumentChecklist";
 import StepTimeline from "../components/StepTimeline";
+import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
+import { planSchemes } from "../services/evaluatePublished";
 import { addProgress } from "../services/progressRepository";
 import { loadFollowUps, saveFollowUp } from "../services/reminderRepository";
 import { buildReminders, type Reminder } from "../services/reminders";
-import { getPublishedSchemes, getSources } from "../services/schemeRepository";
+import { getSources } from "../services/schemeRepository";
 
 export default function Plan() {
-  const published = getPublishedSchemes();
+  const { profile } = useAppState();
+  const nowIso = new Date().toISOString();
+  const actionable = planSchemes(profile, nowIso);
   const [status, setStatus] = useState<{ schemeId: string; message: string } | null>(null);
   const [followUps, setFollowUps] = useState(loadFollowUps);
   const [followUpInput, setFollowUpInput] = useState<{
@@ -18,19 +23,31 @@ export default function Plan() {
   } | null>(null);
   const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  if (published.length === 0) {
+  if (actionable.length === 0) {
     return (
       <section className="flex flex-col gap-4">
         <h1 className="text-3xl font-semibold text-ink">Your plan</h1>
-        <p className="font-semibold">No scheme is confirmed yet. Official rules are still being verified.</p>
+        <p className="font-semibold">
+          No likely-fit schemes for your confirmed answers yet. Plans are built from evaluated results, not the
+          full catalogue.
+        </p>
+        <p>
+          <Link to="/results" className="underline underline-offset-4">
+            Review results
+          </Link>
+          {" · "}
+          <Link to="/discover" className="underline underline-offset-4">
+            Update your description
+          </Link>
+        </p>
       </section>
     );
   }
 
   const sources = getSources();
-  const nowIso = new Date().toISOString();
-  const anyDeadline = published.some((scheme) => scheme.deadline !== null);
-  const reminders: Reminder[] = published.flatMap((scheme) => {
+  const schemes = actionable.map((entry) => entry.scheme);
+  const anyDeadline = schemes.some((scheme) => scheme.deadline !== null);
+  const reminders: Reminder[] = schemes.flatMap((scheme) => {
     const follow = followUps.find((item) => item.schemeId === scheme.id);
     return buildReminders({
       schemeId: scheme.id,
@@ -71,7 +88,9 @@ export default function Plan() {
   return (
     <section className="flex flex-col gap-6">
       <h1 className="text-3xl font-semibold text-ink">Your plan</h1>
-      <p className="text-sm">Demo: saved only in this browser.</p>
+      <p className="text-sm">
+        Showing schemes with a likely-fit result for your confirmed answers. Demo: saved only in this browser.
+      </p>
       <section className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-ink">Reminders</h2>
         <p className="text-sm">Your browser timezone: {browserTimezone}</p>
@@ -81,7 +100,7 @@ export default function Plan() {
         ) : (
           <ul className="list-disc space-y-1 pl-5">
             {reminders.map((reminder) => {
-              const title = published.find((s) => s.id === reminder.schemeId)?.title.en ?? reminder.schemeId;
+              const title = schemes.find((s) => s.id === reminder.schemeId)?.title.en ?? reminder.schemeId;
               const when =
                 reminder.kind === "official_deadline"
                   ? formatIstDate(reminder.dueAt)
@@ -96,12 +115,24 @@ export default function Plan() {
           </ul>
         )}
       </section>
-      {published.map((scheme) => {
+      {actionable.map(({ scheme, detail }) => {
         const source = sources.find((item) => scheme.sourceIds.includes(item.id));
         const followInputId = `follow-up-${scheme.id}`;
         return (
           <article key={scheme.id} className="flex flex-col gap-4 rounded-md border border-sage p-4">
             <h2 className="text-xl font-semibold text-ink">{scheme.title.en}</h2>
+            <p className="text-sm">
+              Result: likely fit ·{" "}
+              <Link to={`/schemes/${scheme.id}`} className="underline underline-offset-4">
+                Understand this scheme
+              </Link>
+            </p>
+            <p className="text-sm">
+              Rules checked: {detail.assessment.passed.length} met
+              {detail.assessment.unknown.length > 0
+                ? `, ${detail.assessment.unknown.length} still unknown`
+                : ""}
+            </p>
             <section className="flex flex-col gap-2">
               <h3 className="font-semibold text-ink">Documents</h3>
               <DocumentChecklist documents={scheme.documents} />

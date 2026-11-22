@@ -23,7 +23,7 @@ export default function Home() {
 
       <div className="flex flex-col gap-4">
         <Link
-          to="/intake"
+          to="/discover"
           className="inline-flex min-h-11 items-center justify-center rounded-md bg-ink px-5 py-3 text-center font-semibold text-canvas hover:opacity-90"
         >
           Start with a description

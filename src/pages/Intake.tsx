@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import FactReview from "../components/FactReview";
 import FollowUpQuestion from "../components/FollowUpQuestion";
 import { useAppState } from "../context/AppState";
-import { decisiveQuestions } from "../domain/questions";
 import { FACT_LABELS, EXAMPLE_NARRATIVE, MAX_NARRATIVE_LENGTH, type FactKey } from "../services/parseNarrative";
 import { getRuleVersions } from "../services/schemeRepository";
 
@@ -17,8 +16,8 @@ export default function Intake() {
     removeProposal,
     confirmedFacts,
     followUpAnswers,
+    unknownFacts,
     answerFollowUp,
-    profile,
   } = useAppState();
   const [message, setMessage] = useState<string | null>(null);
 
@@ -46,10 +45,13 @@ export default function Intake() {
     );
   }
 
-  // Questions come from every loaded rule version, de-duplicated by fact.
+  // Rule facts not already confirmed from the narrative. Keep answered follow-ups visible for review.
   const questions = getRuleVersions()
-    .flatMap((ruleVersion) => decisiveQuestions(ruleVersion, profile))
-    .filter((question, index, all) => all.findIndex((item) => item.factKey === question.factKey) === index);
+    .flatMap((ruleVersion) =>
+      ruleVersion.rules.map((rule) => ({ factKey: rule.factKey, reason: rule.description })),
+    )
+    .filter((question, index, all) => all.findIndex((item) => item.factKey === question.factKey) === index)
+    .filter((question) => confirmedFacts[question.factKey] === undefined);
 
   const confirmedKeys = Object.keys(confirmedFacts);
 
@@ -90,13 +92,23 @@ export default function Intake() {
         </section>
       )}
 
-      {confirmedKeys.length > 0 && (
+      {(confirmedKeys.length > 0 || Object.keys(followUpAnswers).length > 0 || unknownFacts.length > 0) && (
         <section className="flex flex-col gap-2">
           <h2 className="text-xl font-semibold text-ink">Confirmed details</h2>
           <ul className="flex flex-col gap-1">
             {confirmedKeys.map((key) => (
               <li key={key}>
                 {FACT_LABELS[key as FactKey] ?? key}: {String(confirmedFacts[key])}
+              </li>
+            ))}
+            {Object.entries(followUpAnswers).map(([key, value]) => (
+              <li key={`follow-${key}`}>
+                {FACT_LABELS[key as FactKey] ?? key}: {String(value)}
+              </li>
+            ))}
+            {unknownFacts.map((key) => (
+              <li key={`unknown-${key}`}>
+                {FACT_LABELS[key as FactKey] ?? key}: I don't know
               </li>
             ))}
           </ul>
@@ -109,19 +121,23 @@ export default function Intake() {
           {questions.length === 0 ? (
             <p>No further questions for the published rules with your confirmed details.</p>
           ) : (
-            questions.map((question) => (
-              <FollowUpQuestion
-                key={question.factKey}
-                factKey={question.factKey}
-                reason={question.reason}
-                answered={
-                  followUpAnswers[question.factKey] !== undefined
-                    ? String(followUpAnswers[question.factKey])
-                    : undefined
-                }
-                onAnswer={answerFollowUp}
-              />
-            ))
+            questions.map((question) => {
+              const answered =
+                followUpAnswers[question.factKey] !== undefined
+                  ? String(followUpAnswers[question.factKey])
+                  : unknownFacts.includes(question.factKey)
+                    ? "I don't know"
+                    : undefined;
+              return (
+                <FollowUpQuestion
+                  key={question.factKey}
+                  factKey={question.factKey}
+                  reason={question.reason}
+                  answered={answered}
+                  onAnswer={answerFollowUp}
+                />
+              );
+            })
           )}
         </section>
       )}

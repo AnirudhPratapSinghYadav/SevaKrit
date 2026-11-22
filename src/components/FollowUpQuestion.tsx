@@ -8,11 +8,32 @@ const LABELS: Record<string, string> = {
   district: "Which district do you live in?",
 };
 
-const HINTS: Record<string, string> = {
-  hasGovernmentEmployee: "Answer Yes, No, or I don't know.",
-  settlementArea: "Answer rural, urban, or I don't know.",
-  houseType: "Answer kutcha, pucca, or I don't know.",
-};
+type Choice = { label: string; value: string };
+
+function choicesFor(factKey: string): Choice[] | null {
+  if (factKey === "hasGovernmentEmployee") {
+    return [
+      { label: "Yes", value: "Yes" },
+      { label: "No", value: "No" },
+      { label: "I don't know", value: "I don't know" },
+    ];
+  }
+  if (factKey === "settlementArea") {
+    return [
+      { label: "Rural", value: "rural" },
+      { label: "Urban", value: "urban" },
+      { label: "I don't know", value: "I don't know" },
+    ];
+  }
+  if (factKey === "houseType") {
+    return [
+      { label: "Kutcha", value: "kutcha" },
+      { label: "Pucca", value: "pucca" },
+      { label: "I don't know", value: "I don't know" },
+    ];
+  }
+  return null;
+}
 
 type FollowUpQuestionProps = {
   factKey: string;
@@ -21,25 +42,51 @@ type FollowUpQuestionProps = {
   onAnswer: (factKey: string, answer: string) => string | null;
 };
 
-/** One follow-up question. The answer counts only when the user presses Confirm answer. */
+/** One follow-up question. Choice buttons for known fact types; text otherwise. */
 export default function FollowUpQuestion({ factKey, reason, answered, onAnswer }: FollowUpQuestionProps) {
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const inputId = `followup-${factKey}`;
+  const choices = choicesFor(factKey);
+
+  function submit(value: string) {
+    const message = onAnswer(factKey, value);
+    setError(message);
+  }
 
   return (
     <div className="flex flex-col gap-2 rounded-md border border-sage bg-canvas p-3">
-      <label htmlFor={inputId} className="font-semibold text-ink">
+      <p id={`${inputId}-label`} className="font-semibold text-ink">
         {LABELS[factKey] ?? factKey}
-      </label>
+      </p>
       <p className="text-sm">
         <span className="font-semibold">Why we ask:</span> {reason}
       </p>
-      {HINTS[factKey] !== undefined && <p className="text-sm text-ink-soft">{HINTS[factKey]}</p>}
       {answered !== undefined ? (
         <p className="text-sm">Your answer: {answered}</p>
+      ) : choices !== null ? (
+        <div className="flex flex-wrap gap-2" role="group" aria-labelledby={`${inputId}-label`}>
+          {choices.map((choice) => (
+            <button
+              key={choice.value}
+              type="button"
+              onClick={() => submit(choice.value)}
+              className="min-h-11 rounded-md border border-ink px-3 font-semibold text-ink"
+            >
+              {choice.label}
+            </button>
+          ))}
+          {error !== null && (
+            <p role="alert" className="basis-full text-sm text-error-ink">
+              {error}
+            </p>
+          )}
+        </div>
       ) : (
         <div className="flex flex-col gap-2">
+          <label htmlFor={inputId} className="sr-only">
+            {LABELS[factKey] ?? factKey}
+          </label>
           <input
             id={inputId}
             type="text"
@@ -55,10 +102,7 @@ export default function FollowUpQuestion({ factKey, reason, answered, onAnswer }
           )}
           <button
             type="button"
-            onClick={() => {
-              const message = onAnswer(factKey, draft);
-              setError(message);
-            }}
+            onClick={() => submit(draft)}
             className="min-h-11 self-start rounded-md border border-ink px-3 font-semibold text-ink"
           >
             Confirm answer

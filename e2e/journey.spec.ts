@@ -4,7 +4,7 @@ const DESCRIPTION =
   "We are a Baiga family in Dindori; our house is kutcha, my mother does not work for the government, and I want to start keeping dairy animals.";
 
 test("fresh browser: typed intake shows proposals and confirmation", async ({ page }) => {
-  await page.goto("/intake");
+  await page.goto("/discover");
   await page.getByLabel("Tell us about your household in your own words").fill(DESCRIPTION);
   await page.getByRole("button", { name: "Read my description" }).click();
 
@@ -18,7 +18,7 @@ test("fresh browser: typed intake shows proposals and confirmation", async ({ pa
   await expect(page.getByText("Confirmed details").first()).toBeVisible();
 });
 
-test("results show published PM-JANMAN housing with needs-information when facts incomplete", async ({ page }) => {
+test("results show needs-information when facts incomplete; plan stays empty", async ({ page }) => {
   await page.goto("/results");
   await expect(page.getByRole("heading", { name: "Results" })).toBeVisible();
   await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
@@ -26,11 +26,12 @@ test("results show published PM-JANMAN housing with needs-information when facts
   await expect(page.getByText("No scheme is confirmed yet")).toHaveCount(0);
 
   await page.goto("/plan");
-  await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
+  await expect(page.getByText("No likely-fit schemes for your confirmed answers yet").first()).toBeVisible();
+  await expect(page.getByText("PM-JANMAN rural housing")).toHaveCount(0);
 });
 
-test("citizen path: confirm sample facts, answer follow-ups, see likely fit", async ({ page }) => {
-  await page.goto("/intake");
+test("citizen path: confirm sample facts, answer follow-ups, likely fit + scheme detail", async ({ page }) => {
+  await page.goto("/discover");
   await page.getByRole("button", { name: "Use the example" }).click();
   await page.getByRole("button", { name: "Read my description" }).click();
   await expect(page.getByText("Not confirmed yet").first()).toBeVisible();
@@ -42,23 +43,30 @@ test("citizen path: confirm sample facts, answer follow-ups, see likely fit", as
   }
 
   await expect(page.getByText("Follow-up questions")).toBeVisible();
-  // Answer remaining published-rule facts with typed values.
-  const govt = page.getByLabel(/government employee/i);
-  if (await govt.count()) {
-    await govt.fill("No");
-    await page.getByRole("button", { name: "Confirm answer" }).first().click();
-  }
-  const settlement = page.getByLabel(/rural or urban/i);
-  if (await settlement.count()) {
-    await settlement.fill("rural");
-    await page.getByRole("button", { name: "Confirm answer" }).first().click();
-  }
+  await page.getByRole("button", { name: "Rural", exact: true }).click();
+  await page.getByRole("button", { name: "No", exact: true }).click();
 
   await page.getByRole("link", { name: "See results" }).click();
   await expect(page.getByText("Likely fit").first()).toBeVisible();
   await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
   await page.getByText("Rule trace").first().click();
   await expect(page.getByText(/Met:/).first()).toBeVisible();
+
+  await page.getByRole("link", { name: "Understand this scheme" }).first().click();
+  await expect(page).toHaveURL(/\/schemes\/pm-janman-housing-mp$/);
+  await expect(page.getByRole("heading", { name: "PM-JANMAN rural housing" })).toBeVisible();
+  await expect(page.getByText("Eligibility evidence")).toBeVisible();
+
+  await page.getByRole("link", { name: "Open my plan" }).click();
+  await expect(page).toHaveURL(/\/plan$/);
+  await expect(page.getByText("PM-JANMAN rural housing").first()).toBeVisible();
+  await expect(page.getByText("Result: likely fit").first()).toBeVisible();
+});
+
+test("/intake redirects to /discover", async ({ page }) => {
+  await page.goto("/intake");
+  await expect(page).toHaveURL(/\/discover$/);
+  await expect(page.getByRole("heading", { name: "Describe your household" })).toBeVisible();
 });
 
 test("privacy page is reachable", async ({ page }) => {
@@ -73,14 +81,14 @@ test("review page is read-only", async ({ page }) => {
   await expect(page.locator("main").getByRole("button")).toHaveCount(0);
 });
 
-test("mobile 360px has no horizontal overflow on intake", async ({ page }) => {
+test("mobile 360px has no horizontal overflow on discover", async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
-  await page.goto("/intake");
+  await page.goto("/discover");
   const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
   expect(scrollWidth).toBeLessThanOrEqual(360);
 });
 
-test("no console errors on intake", async ({ page }) => {
+test("no console errors on discover", async ({ page }) => {
   const consoleErrors: string[] = [];
   const pageErrors: string[] = [];
   page.on("console", (msg) => {
@@ -88,7 +96,7 @@ test("no console errors on intake", async ({ page }) => {
   });
   page.on("pageerror", (err) => pageErrors.push(err.message));
 
-  await page.goto("/intake");
+  await page.goto("/discover");
   await page.getByLabel("Tell us about your household in your own words").fill(DESCRIPTION);
   await page.getByRole("button", { name: "Read my description" }).click();
   await expect(page.getByText("Not confirmed yet").first()).toBeVisible();

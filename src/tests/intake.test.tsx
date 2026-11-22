@@ -47,4 +47,22 @@ describe("Intake", () => {
     fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
     expect(screen.getByRole("status").textContent).toContain("Please describe your household");
   });
+
+  it("offers Yes / No / I don't know for government-employee follow-up", () => {
+    renderIntake();
+    fireEvent.click(screen.getByRole("button", { name: "Use the example" }));
+    fireEvent.click(screen.getByRole("button", { name: "Read my description" }));
+    while (screen.queryAllByRole("button", { name: "Confirm" }).length > 0) {
+      fireEvent.click(screen.getAllByRole("button", { name: "Confirm" })[0]!);
+    }
+    expect(screen.getByText("Follow-up questions")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Rural" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Urban" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Rural" }));
+    expect(screen.getByText("Your answer: rural")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Yes" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: /^No$/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "I don't know" }));
+    expect(screen.getByText("Your answer: I don't know")).toBeTruthy();
+  });
 });
