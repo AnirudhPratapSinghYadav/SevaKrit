@@ -8,6 +8,9 @@ const textLink = "inline-flex min-h-11 items-center text-terracotta-text underli
 const chapterHeading = "text-2xl font-semibold leading-tight text-ink";
 const chapterMarker = "text-sm font-semibold uppercase tracking-wide text-accent-earth";
 const chapterBody = "flex flex-col gap-4 text-ink-soft";
+const storyFigure = "flex flex-col gap-2";
+const storyImage = "aspect-[3/2] w-full rounded-md object-cover";
+const storyCaption = "text-sm text-ink-soft";
 
 export default function Home() {
   return (
@@ -30,6 +33,23 @@ export default function Home() {
             See how it works
           </Link>
         </div>
+        <figure className={storyFigure}>
+          <picture>
+            <source type="image/webp" srcSet="/images/story/hero-village.webp" />
+            <img
+              src="/images/story/hero-village.webp"
+              width={768}
+              height={512}
+              alt="Illustrative rural landscape with a winding road and greenery"
+              fetchPriority="high"
+              decoding="async"
+              className={`${storyImage} object-[50%_54%]`}
+            />
+          </picture>
+          <figcaption className={storyCaption}>
+            Illustrative editorial image, not a photograph of a verified location.
+          </figcaption>
+        </figure>
       </section>
 
       {/* Chapter 2 — The unseen problem */}
@@ -81,6 +101,20 @@ export default function Home() {
             </ul>
           </div>
         </div>
+        <figure className={storyFigure}>
+          <img
+            src="/images/story/household-story.webp"
+            width={768}
+            height={512}
+            loading="lazy"
+            decoding="async"
+            alt="Illustration of a family talking together outside a rural home"
+            className={`${storyImage} object-[50%_45%]`}
+          />
+          <figcaption className={storyCaption}>
+            AI-generated illustration; not an actual beneficiary story.
+          </figcaption>
+        </figure>
       </section>
 
       {/* Chapter 4 — The intelligent questions */}
@@ -141,6 +175,18 @@ export default function Home() {
             Open my plan
           </Link>
         </div>
+        <figure className={storyFigure}>
+          <img
+            src="/images/story/action-checklist.webp"
+            width={768}
+            height={512}
+            loading="lazy"
+            decoding="async"
+            alt="Illustration of hands looking at a blank paper checklist beside a notebook"
+            className={storyImage}
+          />
+          <figcaption className={storyCaption}>Illustrative checklist scene.</figcaption>
+        </figure>
       </section>
 
       {/* Chapter 7 — Evidence and trust */}
@@ -175,6 +221,20 @@ export default function Home() {
             explaining each result in the household&apos;s own words.
           </p>
         </div>
+        <figure className={storyFigure}>
+          <img
+            src="/images/story/assisted-service.webp"
+            width={768}
+            height={512}
+            loading="lazy"
+            decoding="async"
+            alt="Illustration of a conversation about paperwork at an outdoor table"
+            className={storyImage}
+          />
+          <figcaption className={storyCaption}>
+            Illustrative scene; not a photographed HaqPath service centre.
+          </figcaption>
+        </figure>
       </section>
 
       {/* Chapter 9 — Final call */}

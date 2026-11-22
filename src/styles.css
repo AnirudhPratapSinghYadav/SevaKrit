@@ -26,6 +26,8 @@
   --radius-image: 20px;
   --page-max: 1240px;
   --content-max: 760px;
+  --font-display: "Newsreader", Georgia, serif;
+  --font-body: "Inter", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @theme {
@@ -90,4 +92,28 @@
     outline: 3px solid var(--brand);
     outline-offset: 2px;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+body {
+  font-family: var(--font-body);
+}
+
+h1.display,
+.font-display {
+  font-family: var(--font-display);
 }
