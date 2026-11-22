@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import DocumentChecklist from "../components/DocumentChecklist";
+import FeatureRail from "../components/FeatureRail";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
@@ -134,11 +135,21 @@ export default function Plan() {
 
   return (
     <section className="flex flex-col gap-6">
+      <FeatureRail />
       <h1 className="text-3xl font-semibold text-ink">{t("planTitle")}</h1>
       <p className="text-sm">{t("planIntro")}</p>
-      <p>
+      <p className="flex flex-wrap gap-x-4 gap-y-2">
         <Link to="/plan/print" className="underline underline-offset-4">
           {t("planPrint")}
+        </Link>
+        <Link to="/tools/pocket" className="underline underline-offset-4">
+          {t("toolPocket")}
+        </Link>
+        <Link to="/tools/route" className="underline underline-offset-4">
+          {t("toolRoute")}
+        </Link>
+        <Link to="/tools/resolve" className="underline underline-offset-4">
+          {t("toolResolve")}
         </Link>
       </p>
       <section className="flex flex-col gap-2">

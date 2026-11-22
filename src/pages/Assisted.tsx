@@ -147,6 +147,10 @@ export default function Assisted() {
             <Link to="/plan/print" className="underline underline-offset-4">
               {hi ? "प्रिंट शीट" : "Printable sheet"}
             </Link>
+            {" · "}
+            <Link to="/tools/resolve" className="underline underline-offset-4">
+              {hi ? "हक़रिज़ॉल्व" : "HaqResolve"}
+            </Link>
           </p>
           <button
             type="button"

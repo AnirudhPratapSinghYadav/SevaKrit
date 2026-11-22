@@ -41,6 +41,10 @@ export default function ActionSheet() {
         <Link to="/plan" className="underline underline-offset-4">
           {t("printBack")}
         </Link>
+        {" · "}
+        <Link to="/tools/pocket" className="underline underline-offset-4">
+          {t("toolPocket")}
+        </Link>
       </p>
       {actionable.length === 0 ? (
         <p>{t("printEmpty")}</p>

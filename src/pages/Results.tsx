@@ -1,9 +1,12 @@
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import ConnectionBadge from "../components/ConnectionBadge";
+import FeatureRail from "../components/FeatureRail";
 import RuleTrace from "../components/RuleTrace";
 import SafeSummary from "../components/SafeSummary";
 import SourceBadge from "../components/SourceBadge";
 import { useAppState } from "../context/AppState";
+import { loadWatchedEvaluations, rememberEvaluation } from "../domain/haqWatch";
 import type { Outcome } from "../domain/types";
 import { useLanguage } from "../i18n/Language";
 import type { MessageKey } from "../i18n/messages";
@@ -21,6 +24,26 @@ export default function Results() {
   const { profile } = useAppState();
   const { t } = useLanguage();
   const published = getPublishedSchemes();
+  const sources = getSources();
+  const now = useMemo(() => new Date().toISOString(), []);
+  const entries = useMemo(
+    () => (published.length === 0 ? [] : evaluatePublishedSchemes(profile, now)),
+    [published.length, profile, now],
+  );
+  const watchSignature = entries
+    .map((entry) => `${entry.scheme.id}:${entry.detail.assessment.ruleVersionId}`)
+    .join("|");
+
+  useEffect(() => {
+    // Seed a baseline watch record once per scheme — do not overwrite on every Results visit
+    // so HaqWatch can still detect a later published version change.
+    const existing = new Set(loadWatchedEvaluations().map((item) => item.schemeId));
+    for (const entry of entries) {
+      if (!existing.has(entry.scheme.id)) {
+        rememberEvaluation(entry.scheme.id, entry.detail.assessment.ruleVersionId, now);
+      }
+    }
+  }, [watchSignature, now, entries]);
 
   if (published.length === 0) {
     return (
@@ -36,12 +59,9 @@ export default function Results() {
     );
   }
 
-  const sources = getSources();
-  const now = new Date().toISOString();
-  const entries = evaluatePublishedSchemes(profile, now);
-
   return (
     <section className="flex flex-col gap-6">
+      <FeatureRail />
       <h1 className="font-display text-3xl font-semibold text-ink">{t("resultsTitle")}</h1>
       <ConnectionBadge />
       <p className="text-sm">{t("resultsDisclaimer")}</p>
@@ -51,6 +71,12 @@ export default function Results() {
         </Link>
         <Link to="/glossary" className="underline underline-offset-4">
           {t("glossaryTitle")}
+        </Link>
+        <Link to="/tools/compass" className="underline underline-offset-4">
+          {t("toolCompass")}
+        </Link>
+        <Link to="/tools/watch" className="underline underline-offset-4">
+          {t("toolWatch")}
         </Link>
         <SafeSummary entries={entries} />
       </div>
@@ -96,17 +122,33 @@ export default function Results() {
                     </ul>
                   )}
                   <RuleTrace results={detail.results} />
-                  <Link
-                    to={`/schemes/${scheme.id}`}
-                    className="inline-flex min-h-11 items-center self-start rounded-md border border-ink px-3 font-semibold text-ink"
-                  >
-                    {t("resultsUnderstand")}
-                  </Link>
-                  {section.outcome === "likely_fit" && (
-                    <Link to="/plan" className="text-sm underline underline-offset-4">
-                      {t("resultsOpenPlan")}
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      to={`/schemes/${scheme.id}`}
+                      className="inline-flex min-h-11 items-center self-start rounded-md border border-ink px-3 font-semibold text-ink"
+                    >
+                      {t("resultsUnderstand")}
                     </Link>
-                  )}
+                    <Link
+                      to="/tools/compass"
+                      className="inline-flex min-h-11 items-center text-sm underline underline-offset-4"
+                    >
+                      {t("toolCompass")}
+                    </Link>
+                    {section.outcome === "needs_information" && (
+                      <Link
+                        to="/tools/resolve"
+                        className="inline-flex min-h-11 items-center text-sm underline underline-offset-4"
+                      >
+                        {t("toolResolve")}
+                      </Link>
+                    )}
+                    {section.outcome === "likely_fit" && (
+                      <Link to="/plan" className="inline-flex min-h-11 items-center text-sm underline underline-offset-4">
+                        {t("resultsOpenPlan")}
+                      </Link>
+                    )}
+                  </div>
                 </article>
               ))
             )}

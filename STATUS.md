@@ -222,6 +222,25 @@ Parent HEAD before this work: `01786be` on `main` (matched origin).
 2. Hosted Supabase project credentials still required for a live reviewer against the internet.
 3. Do not claim production-ready backend until PostgREST+Auth RLS suite passes on a healthy machine.
 
+## Checkpoint — five signature innovations (2026-11-22 late)
+
+### Implemented routes
+- `/tools/compass` HaqCompass — hypothetical facts vs confirmed; same evaluator; not saved
+- `/tools/pocket` HaqPocket — printable card + QR to `/public/schemes/:slug` (no household data)
+- `/tools/resolve` HaqResolve — source-backed troubleshooting; no invented appeals
+- `/tools/watch` HaqWatch — on-demand rule-version compare (not push alerts)
+- `/tools/route` SevaRoute — visit order from verified steps; no invented addresses/hours
+- Also `/workspace`, `/login` (guest or Supabase when configured), FeatureRail on Plan/Results/tools
+
+### Verification (this slice)
+- typecheck PASS, lint PASS (0 errors), unit **149/149**, build PASS, Playwright **24/24**
+- npm audit: 4 advisories — vitest/tinypool/@vitest/mocker are **dev**; zod high is runtime (collection DoS); not force-upgraded
+
+### Blockers unchanged
+- Hosted Supabase credentials / live reviewer Auth against cloud
+- Docker RLS re-run when daemon available
+- Vercel CLI / deploy URL
+
 ## Checkpoint — Hindi wiring + reviewer simulator (2026-11-22 night)
 
 HEAD before commit: `205979c` (= origin/main).

@@ -36,6 +36,41 @@ export default function Help() {
           Awas+, the CM Helpline, or any department.
         </p>
       </section>
+      <section className="flex flex-col gap-2">
+        <h2 className="text-xl font-semibold text-ink">HaqPath tools</h2>
+        <ul className="list-disc space-y-2 pl-5">
+          <li>
+            <Link to="/tools/compass" className="underline underline-offset-4">
+              HaqCompass
+            </Link>{" "}
+            — what-if eligibility without changing saved answers.
+          </li>
+          <li>
+            <Link to="/tools/route" className="underline underline-offset-4">
+              SevaRoute
+            </Link>{" "}
+            — visit order from verified steps only.
+          </li>
+          <li>
+            <Link to="/tools/watch" className="underline underline-offset-4">
+              HaqWatch
+            </Link>{" "}
+            — compare remembered rule versions to the latest published set.
+          </li>
+          <li>
+            <Link to="/tools/pocket" className="underline underline-offset-4">
+              HaqPocket
+            </Link>{" "}
+            — printable card with a public QR (no household data).
+          </li>
+          <li>
+            <Link to="/tools/resolve" className="underline underline-offset-4">
+              HaqResolve
+            </Link>{" "}
+            — guided troubleshooting without invented appeals.
+          </li>
+        </ul>
+      </section>
       <p>
         <Link to="/how-it-works" className="underline underline-offset-4">
           How the check works

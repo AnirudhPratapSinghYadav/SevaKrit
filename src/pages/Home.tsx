@@ -31,7 +31,10 @@ export default function Home() {
             : "HaqPath helps Baiga, Bharia and Sahariya households in Madhya Pradesh understand possible government benefits, see why they may qualify, and know what to do next."}
         </p>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <Link to="/discover" className={primaryLink}>
+          <Link to="/login" className={primaryLink}>
+            {hi ? "प्रवेश / साइन इन" : "Enter / Sign in"}
+          </Link>
+          <Link to="/discover" className={secondaryLink}>
             {hi ? "संभावित सहायता देखें" : "Find possible benefits"}
           </Link>
           <Link to="#how-it-works" className={secondaryLink}>

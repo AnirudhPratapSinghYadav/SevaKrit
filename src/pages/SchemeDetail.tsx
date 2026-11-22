@@ -134,14 +134,32 @@ export default function SchemeDetail() {
 
       <p className="rounded-md bg-surface-muted px-4 py-3 text-sm">{t("detailDisclaimer")}</p>
 
-      <p>
+      <div className="flex flex-wrap gap-3">
         <Link
           to="/plan"
           className="inline-flex min-h-11 items-center rounded-md bg-ink px-4 font-semibold text-canvas"
         >
           {t("detailOpenPlan")}
         </Link>
-      </p>
+        <Link
+          to="/tools/compass"
+          className="inline-flex min-h-11 items-center rounded-md border border-ink px-4 font-semibold text-ink"
+        >
+          {t("toolCompass")}
+        </Link>
+        <Link
+          to="/tools/watch"
+          className="inline-flex min-h-11 items-center rounded-md border border-ink px-4 font-semibold text-ink"
+        >
+          {t("toolWatch")}
+        </Link>
+        <Link
+          to="/tools/resolve"
+          className="inline-flex min-h-11 items-center text-sm underline underline-offset-4"
+        >
+          {t("toolResolve")}
+        </Link>
+      </div>
     </section>
   );
 }

@@ -1,9 +1,12 @@
 import { Link, NavLink, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../i18n/Language";
 
 export default function AppShell() {
   const { t, toggle } = useLanguage();
+  const { user, isGuest } = useAuth();
   const navItems = [
+    { to: "/workspace", label: t("navWorkspace") },
     { to: "/discover", label: t("navDiscover") },
     { to: "/results", label: t("navResults") },
     { to: "/plan", label: t("navPlan") },
@@ -22,14 +25,24 @@ export default function AppShell() {
               </Link>
               <p className="text-sm text-ink-soft">{t("tagline")}</p>
             </div>
-            <button
-              type="button"
-              onClick={toggle}
-              className="min-h-11 rounded-md border border-ink px-3 font-semibold text-ink"
-              lang={undefined}
-            >
-              {t("langToggle")}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              {!user && !isGuest && (
+                <Link
+                  to="/login"
+                  className="inline-flex min-h-11 items-center rounded-md bg-ink px-3 font-semibold text-canvas"
+                >
+                  {t("navLogin")}
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={toggle}
+                className="min-h-11 rounded-md border border-ink px-3 font-semibold text-ink"
+                lang={undefined}
+              >
+                {t("langToggle")}
+              </button>
+            </div>
           </div>
           <nav aria-label="Main" className="flex flex-wrap gap-x-4 gap-y-1">
             {navItems.map((item) => (
