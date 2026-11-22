@@ -1,10 +1,12 @@
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../i18n/Language";
 
 export default function AppShell() {
   const { t, toggle } = useLanguage();
   const { user, isGuest } = useAuth();
+  const { pathname } = useLocation();
+  const isLanding = pathname === "/";
   const navItems = [
     { to: "/workspace", label: t("navWorkspace") },
     { to: "/discover", label: t("navDiscover") },
@@ -15,12 +17,19 @@ export default function AppShell() {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-canvas text-body">
-      <header className="sticky top-0 z-20 border-b border-border bg-canvas/95 backdrop-blur-sm">
-        <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-3 md:max-w-content">
+    <div className={`flex min-h-screen flex-col text-body ${isLanding ? "atmosphere" : "bg-canvas"}`}>
+      <header className="glass-nav sticky top-0 z-30">
+        <div
+          className={`mx-auto flex w-full flex-col gap-2 px-4 py-3 ${
+            isLanding ? "max-w-page lg:px-6" : "max-w-page md:max-w-content"
+          }`}
+        >
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex flex-col">
-              <Link to="/" className="inline-flex min-h-11 items-center font-display text-2xl font-semibold text-ink">
+              <Link
+                to="/"
+                className="inline-flex min-h-11 items-center font-display text-2xl font-semibold tracking-tight text-ink md:text-[1.75rem]"
+              >
                 {t("brand")}
               </Link>
               <p className="text-sm text-ink-soft">{t("tagline")}</p>
@@ -29,7 +38,7 @@ export default function AppShell() {
               {!user && !isGuest && (
                 <Link
                   to="/login"
-                  className="inline-flex min-h-11 items-center rounded-md bg-ink px-3 font-semibold text-canvas"
+                  className="btn-primary-glow inline-flex min-h-11 items-center rounded-full px-4 font-semibold text-canvas"
                 >
                   {t("navLogin")}
                 </Link>
@@ -37,8 +46,7 @@ export default function AppShell() {
               <button
                 type="button"
                 onClick={toggle}
-                className="min-h-11 rounded-md border border-ink px-3 font-semibold text-ink"
-                lang={undefined}
+                className="glass-panel min-h-11 rounded-full px-4 font-semibold text-ink"
               >
                 {t("langToggle")}
               </button>
@@ -50,8 +58,8 @@ export default function AppShell() {
                 key={item.to}
                 to={item.to}
                 className={({ isActive }) =>
-                  `inline-flex min-h-11 items-center underline-offset-4 hover:underline ${
-                    isActive ? "font-semibold text-ink" : "text-accent-earth"
+                  `inline-flex min-h-11 items-center rounded-full px-2 underline-offset-4 transition hover:underline ${
+                    isActive ? "bg-ink px-3 font-semibold text-canvas" : "text-accent-earth"
                   }`
                 }
               >
@@ -77,13 +85,21 @@ export default function AppShell() {
       <main
         id="main-content"
         tabIndex={-1}
-        className="mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none md:max-w-content"
+        className={
+          isLanding
+            ? "w-full flex-1 outline-none"
+            : "mx-auto w-full max-w-page flex-1 px-4 py-8 outline-none md:max-w-content"
+        }
       >
         <Outlet />
       </main>
 
-      <footer className="border-t border-border bg-surface-muted">
-        <div className="mx-auto flex w-full max-w-page flex-col gap-2 px-4 py-4 text-sm md:max-w-content">
+      <footer className="border-t border-border/70 bg-surface-muted/80 backdrop-blur-md">
+        <div
+          className={`mx-auto flex w-full flex-col gap-2 px-4 py-5 text-sm ${
+            isLanding ? "max-w-page lg:px-6" : "max-w-page md:max-w-content"
+          }`}
+        >
           <p>{t("footer")}</p>
           <p>{t("langNote")}</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
@@ -95,6 +111,9 @@ export default function AppShell() {
             </Link>
             <Link to="/samples" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
               Samples
+            </Link>
+            <Link to="/review" className="inline-flex min-h-11 items-center text-accent-earth underline underline-offset-4">
+              Review
             </Link>
           </div>
         </div>

@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import LoadingSpinner from "../components/ui/LoadingSpinner";
 import { useAuth } from "../context/AuthContext";
 import { useLanguage } from "../i18n/Language";
 
-/** Nagarakshak-style auth entry adapted to HaqPath forest/ivory system. */
 export default function Login() {
   const { t } = useLanguage();
   const { user, isGuest, configured, loading, signIn, signUp, continueAsGuest } = useAuth();
@@ -14,7 +14,15 @@ export default function Login() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState<string | null>(null);
 
-  if (!loading && (user || isGuest)) {
+  if (loading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    );
+  }
+
+  if (user || isGuest) {
     return <Navigate to="/workspace" replace />;
   }
 
@@ -31,18 +39,19 @@ export default function Login() {
   }
 
   return (
-    <section className="mx-auto flex w-full max-w-md flex-col gap-6 py-8">
-      <header className="flex flex-col gap-2 text-center">
-        <p className="text-sm font-semibold uppercase tracking-wide text-accent-earth">{t("brand")}</p>
-        <h1 className="font-display text-3xl font-semibold text-ink">{t("loginTitle")}</h1>
+    <section className="relative mx-auto flex w-full max-w-md flex-col gap-6 py-10">
+      <div className="pointer-events-none absolute -left-20 top-0 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(203,185,124,0.35),transparent_70%)] blur-xl" />
+      <header className="relative flex flex-col gap-2 text-center">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent-earth">{t("brand")}</p>
+        <h1 className="font-display text-4xl font-semibold text-ink">{t("loginTitle")}</h1>
         <p className="text-ink-soft">{t("loginIntro")}</p>
       </header>
 
       {!configured && (
-        <p className="rounded-md bg-surface-muted px-4 py-3 text-sm">{t("loginNoSupabase")}</p>
+        <p className="glass-panel rounded-2xl px-4 py-3 text-sm">{t("loginNoSupabase")}</p>
       )}
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 rounded-md border border-border bg-surface p-4">
+      <form onSubmit={onSubmit} className="glass-panel relative flex flex-col gap-3 rounded-3xl p-5">
         {mode === "up" && (
           <>
             <label htmlFor="login-name" className="font-semibold text-ink">
@@ -52,7 +61,7 @@ export default function Login() {
               id="login-name"
               value={name}
               onChange={(event) => setName(event.target.value)}
-              className="min-h-11 rounded-md border border-border px-3"
+              className="min-h-11 rounded-xl border border-border bg-surface/80 px-3"
             />
           </>
         )}
@@ -66,7 +75,7 @@ export default function Login() {
           required={configured}
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="min-h-11 rounded-md border border-border px-3"
+          className="min-h-11 rounded-xl border border-border bg-surface/80 px-3"
         />
         <label htmlFor="login-password" className="font-semibold text-ink">
           Password
@@ -78,12 +87,12 @@ export default function Login() {
           required={configured}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="min-h-11 rounded-md border border-border px-3"
+          className="min-h-11 rounded-xl border border-border bg-surface/80 px-3"
         />
         <button
           type="submit"
           disabled={!configured}
-          className="min-h-11 rounded-md bg-ink px-4 font-semibold text-canvas disabled:opacity-50"
+          className="btn-primary-glow min-h-11 rounded-full px-4 font-semibold text-canvas disabled:opacity-50"
         >
           {mode === "in" ? t("loginSignIn") : t("loginSignUp")}
         </button>
@@ -103,7 +112,7 @@ export default function Login() {
           continueAsGuest();
           navigate("/workspace");
         }}
-        className="min-h-11 rounded-md border border-ink px-4 font-semibold text-ink"
+        className="glass-panel min-h-11 rounded-full px-4 font-semibold text-ink"
       >
         {t("loginGuest")}
       </button>

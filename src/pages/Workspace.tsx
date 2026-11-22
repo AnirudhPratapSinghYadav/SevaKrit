@@ -42,7 +42,7 @@ export default function Workspace() {
       <div className="grid gap-4 md:grid-cols-2">
         <Link
           to="/discover"
-          className="flex min-h-28 flex-col justify-center rounded-md bg-ink px-5 py-4 text-canvas"
+          className="btn-primary-glow flex min-h-32 flex-col justify-center rounded-3xl px-5 py-4 text-canvas transition hover:-translate-y-0.5"
         >
           <span className="font-display text-2xl font-semibold">{t("navDiscover")}</span>
           <span className="text-sm opacity-90">
@@ -51,21 +51,21 @@ export default function Workspace() {
         </Link>
         <Link
           to="/results"
-          className="flex min-h-28 flex-col justify-center rounded-md border border-border bg-surface px-5 py-4"
+          className="glass-panel flex min-h-32 flex-col justify-center rounded-3xl px-5 py-4 transition hover:-translate-y-0.5"
         >
           <span className="font-display text-2xl font-semibold text-ink">{t("navResults")}</span>
           <span className="text-sm text-ink-soft">{t("workspaceSeeOutcomes")}</span>
         </Link>
         <Link
           to="/plan"
-          className="flex min-h-28 flex-col justify-center rounded-md border border-border bg-sage px-5 py-4"
+          className="glass-panel flex min-h-32 flex-col justify-center rounded-3xl bg-sage/70 px-5 py-4 transition hover:-translate-y-0.5"
         >
           <span className="font-display text-2xl font-semibold text-ink">{t("navPlan")}</span>
           <span className="text-sm text-ink-soft">{t("workspacePlanHint")}</span>
         </Link>
         <Link
           to="/assisted"
-          className="flex min-h-28 flex-col justify-center rounded-md border border-border bg-surface-muted px-5 py-4"
+          className="glass-panel flex min-h-32 flex-col justify-center rounded-3xl px-5 py-4 transition hover:-translate-y-0.5"
         >
           <span className="font-display text-2xl font-semibold text-ink">{t("navAssisted")}</span>
           <span className="text-sm text-ink-soft">{t("workspaceAssistedHint")}</span>
