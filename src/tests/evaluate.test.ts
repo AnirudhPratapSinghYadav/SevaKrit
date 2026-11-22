@@ -279,3 +279,73 @@ describe("evaluateScheme: synthetic households reach three distinct outcomes", (
     );
   });
 });
+
+// Synthetic fixtures only: provenance gating must never yield a definitive outcome from weak evidence.
+describe("provenance gating", () => {
+  it("(a) an unverified source with a passing fact gives source_review_needed, not likely_fit", () => {
+    const rules = [rule("a", FACT.size, "at_most", 5, { sourceId: unverifiedSource.id })];
+    const result = evaluate(rules, allPassProfile);
+    expect(result.outcome).toBe("source_review_needed");
+    expect(result.outcome).not.toBe("likely_fit");
+  });
+
+  it("(b) a conflicting source with a failing fact never gives likely_mismatch", () => {
+    const conflicting = { ...unverifiedSource, id: "src-provenance-conflict", status: "conflicting" as const };
+    const rules = [rule("a", FACT.size, "at_most", 5, { sourceId: conflicting.id })];
+    const result = evaluate(rules, withFacts({ [FACT.size]: 99 }), [conflicting]);
+    expect(result.outcome).toBe("source_review_needed");
+    expect(result.outcome).not.toBe("likely_mismatch");
+  });
+
+  it("(c) a stale checkedAt never gives a definitive likely_fit or likely_mismatch", () => {
+    const passing = evaluate([rule("a", FACT.size, "at_most", 5, { sourceId: staleSource.id })], allPassProfile);
+    const failing = evaluate([rule("a", FACT.size, "at_most", 5, { sourceId: staleSource.id })], withFacts({ [FACT.size]: 99 }));
+    expect(passing.outcome).toBe("source_review_needed");
+    expect(failing.outcome).toBe("source_review_needed");
+    expect([passing.outcome, failing.outcome]).not.toContain("likely_fit");
+    expect([passing.outcome, failing.outcome]).not.toContain("likely_mismatch");
+  });
+
+  it("(d) an OR group with one source_review_needed member and one failing member is not likely_mismatch", () => {
+    const groupRules = [
+      rule("p1", FACT.proofX, "is_true", true, { group: "proof", sourceId: unverifiedSource.id }),
+      rule("p2", FACT.proofY, "is_true", true, { group: "proof" }),
+    ];
+    // p1 holds but its source is unverified (review needed); p2 fails on a verified source.
+    const result = evaluate(groupRules, withFacts({ [FACT.proofX]: true, [FACT.proofY]: false }));
+    expect(result.outcome).not.toBe("likely_mismatch");
+    expect(result.outcome).toBe("needs_information");
+    expect(result.failed).toEqual(["p2"]);
+  });
+
+  it("(e) an unanswered fact gives needs_information, not likely_mismatch", () => {
+    const rules = [rule("a", FACT.size, "at_most", 5)];
+    const result = evaluate(rules, without(FACT.size));
+    expect(result.outcome).toBe("needs_information");
+    expect(result.outcome).not.toBe("likely_mismatch");
+    expect(result.unknown).toEqual(["a"]);
+  });
+});
+
+// Documents current behaviour only. RuleVersion has no effectiveFrom/effectiveTo, and no code in src selects
+// between rule versions: the evaluator takes one RuleVersion and the caller chooses it. No overlap check exists.
+describe("rule versions with overlapping effective dates (current behaviour)", () => {
+  const profile = withFacts({ [FACT.income]: 250000 });
+  const looser = ruleVersion([rule("i", FACT.income, "at_most", 300000)], {
+    id: "synthetic-rv-overlap-a",
+    effectiveAt: "2025-01-01",
+  });
+  const stricter = ruleVersion([rule("i", FACT.income, "at_most", 200000)], {
+    id: "synthetic-rv-overlap-b",
+    effectiveAt: "2025-03-01",
+  });
+
+  it("evaluates each overlapping version independently, with no conflict error", () => {
+    const a = evaluateScheme(syntheticScheme, looser, profile, allSources, NOW);
+    const b = evaluateScheme(syntheticScheme, stricter, profile, allSources, NOW);
+    expect(a.ruleVersionId).toBe("synthetic-rv-overlap-a");
+    expect(a.outcome).toBe("likely_fit");
+    expect(b.ruleVersionId).toBe("synthetic-rv-overlap-b");
+    expect(b.outcome).toBe("likely_mismatch");
+  });
+});

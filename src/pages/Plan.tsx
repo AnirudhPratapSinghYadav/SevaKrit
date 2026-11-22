@@ -4,6 +4,7 @@ import DocumentChecklist from "../components/DocumentChecklist";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
 import { formatIstDate } from "../domain/dates";
+import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import { planSchemes } from "../services/evaluatePublished";
 import { addProgress } from "../services/progressRepository";
 import { loadFollowUps, saveFollowUp } from "../services/reminderRepository";
@@ -122,7 +123,7 @@ export default function Plan() {
           <article key={scheme.id} className="flex flex-col gap-4 rounded-md border border-sage p-4">
             <h2 className="text-xl font-semibold text-ink">{scheme.title.en}</h2>
             <p className="text-sm">
-              Result: likely fit ·{" "}
+              Result: {OUTCOME_LABELS[detail.assessment.outcome]} ·{" "}
               <Link to={`/schemes/${scheme.id}`} className="underline underline-offset-4">
                 Understand this scheme
               </Link>

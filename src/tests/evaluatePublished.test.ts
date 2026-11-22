@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { HouseholdProfile } from "../domain/types";
+import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import {
   evaluatePublishedSchemes,
   getPublishedSchemeBySlug,
@@ -50,6 +51,22 @@ describe("evaluatePublished / planSchemes", () => {
       NOW,
     );
     expect(mismatched).toEqual([]);
+  });
+
+  it("derives the Plan result label for a likely_fit item", () => {
+    const fit = planSchemes(
+      profile({
+        tribalGroup: "Baiga",
+        district: "Dindori",
+        houseType: "kutcha",
+        settlementArea: "rural",
+        hasGovernmentEmployee: false,
+      }),
+      NOW,
+    );
+    const outcome = fit[0]!.detail.assessment.outcome;
+    expect(outcome).toBe("likely_fit");
+    expect(`Result: ${OUTCOME_LABELS[outcome]}`).toBe("Result: Likely fit");
   });
 
   it("resolves published scheme by slug", () => {

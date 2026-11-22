@@ -1,19 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import RuleTrace from "../components/RuleTrace";
 import SourceBadge from "../components/SourceBadge";
+import SourceCard from "../components/SourceCard";
 import DocumentChecklist from "../components/DocumentChecklist";
 import StepTimeline from "../components/StepTimeline";
 import { useAppState } from "../context/AppState";
-import { evaluateSchemeDetailed } from "../domain/evaluate";
-import { getPublishedSchemeBySlug } from "../services/evaluatePublished";
-import { getRuleVersions, getSources, ruleVersionFor } from "../services/schemeRepository";
-
-const OUTCOME_LABEL: Record<string, string> = {
-  likely_fit: "Likely fit",
-  needs_information: "Needs information",
-  likely_mismatch: "Likely mismatch",
-  source_review_needed: "Source under review",
-};
+import { OUTCOME_LABELS } from "../domain/outcomeLabels";
+import { evaluateSchemeForDate, getPublishedSchemeBySlug } from "../services/evaluatePublished";
+import { getSources } from "../services/schemeRepository";
 
 export default function SchemeDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -33,9 +27,8 @@ export default function SchemeDetail() {
   }
 
   const sources = getSources();
-  const versions = getRuleVersions();
   const now = new Date().toISOString();
-  const detail = evaluateSchemeDetailed(scheme, ruleVersionFor(scheme, versions), profile, sources, now);
+  const detail = evaluateSchemeForDate(scheme, profile, now);
   const primarySource = sources.find((item) => scheme.sourceIds.includes(item.id));
 
   return (
@@ -53,7 +46,7 @@ export default function SchemeDetail() {
           </p>
         )}
         <p className="font-semibold text-ink">
-          Status for your household: {OUTCOME_LABEL[detail.assessment.outcome] ?? detail.assessment.outcome}
+          Status for your household: {OUTCOME_LABELS[detail.assessment.outcome] ?? detail.assessment.outcome}
         </p>
         <p className="text-sm">{scheme.department}</p>
       </header>
@@ -78,6 +71,14 @@ export default function SchemeDetail() {
         <p className="text-sm">
           Last human verification on this record: {scheme.lastVerified ?? "not recorded"}
         </p>
+        {primarySource && (
+          <SourceCard
+            authority={primarySource.publisher}
+            url={primarySource.url}
+            status={primarySource.status}
+            verifiedOn={scheme.lastVerified}
+          />
+        )}
       </section>
 
       <section className="flex flex-col gap-2">

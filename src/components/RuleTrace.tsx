@@ -3,7 +3,7 @@ import type { RuleResult, RuleOutcome } from "../domain/evaluate";
 const TRACE_LABEL: Record<RuleOutcome, string> = {
   pass: "Met",
   fail: "Not met",
-  unknown: "Not yet known",
+  unknown: "Not answered",
   source_review_needed: "Source under review",
 };
 
@@ -19,13 +19,27 @@ export default function RuleTrace({ results }: RuleTraceProps) {
       {results.length === 0 ? (
         <p className="py-2">No rules are loaded for this scheme yet.</p>
       ) : (
-        <ul className="flex flex-col gap-2 py-2">
-          {results.map((result) => (
-            <li key={result.ruleId}>
-              <span className="font-semibold">{TRACE_LABEL[result.outcome]}:</span> {result.reason}
-            </li>
-          ))}
-        </ul>
+        <div className="overflow-x-auto py-2">
+          <table className="w-full text-left text-sm">
+            <caption className="sr-only">Rule checks for this scheme</caption>
+            <thead>
+              <tr>
+                <th scope="col">Rule</th>
+                <th scope="col">Result</th>
+                <th scope="col">Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((result) => (
+                <tr key={result.ruleId}>
+                  <th scope="row" className="font-semibold [overflow-wrap:anywhere] align-top">{result.ruleId}</th>
+                  <td className="[overflow-wrap:anywhere] align-top">{TRACE_LABEL[result.outcome]}</td>
+                  <td className="[overflow-wrap:anywhere] align-top">{result.reason}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </details>
   );

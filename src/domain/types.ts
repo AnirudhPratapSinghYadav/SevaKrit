@@ -61,11 +61,22 @@ export const RuleVersionSchema = z
     schemeId: z.string(),
     version: z.number().int().min(1),
     effectiveAt: IsoDate,
+    // Exclusive end of the applicability interval [effectiveAt, effectiveTo). Missing means open-ended.
+    effectiveTo: IsoDate.optional(),
     reviewedAt: IsoDate.nullable(),
     sourceIds: z.array(z.string()),
     rules: z.array(RuleSchema),
   })
-  .strict();
+  .strict()
+  .superRefine((value, ctx) => {
+    if (value.effectiveTo !== undefined && value.effectiveTo <= value.effectiveAt) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["effectiveTo"],
+        message: "effectiveTo must be strictly greater than effectiveAt",
+      });
+    }
+  });
 export type RuleVersion = z.infer<typeof RuleVersionSchema>;
 
 export const HouseholdProfileSchema = z
@@ -94,6 +105,7 @@ export const AssessmentSchema = z
     failed: z.array(z.string()),
     unknown: z.array(z.string()),
     sourceIds: z.array(z.string()),
+    conflictingRuleVersionIds: z.array(z.string()).optional(),
   })
   .strict();
 export type Assessment = z.infer<typeof AssessmentSchema>;

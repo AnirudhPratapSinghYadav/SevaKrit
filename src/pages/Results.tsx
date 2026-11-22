@@ -2,15 +2,16 @@ import { Link } from "react-router-dom";
 import RuleTrace from "../components/RuleTrace";
 import SourceBadge from "../components/SourceBadge";
 import { useAppState } from "../context/AppState";
+import { OUTCOME_LABELS } from "../domain/outcomeLabels";
 import type { Outcome } from "../domain/types";
 import { evaluatePublishedSchemes } from "../services/evaluatePublished";
 import { getPublishedSchemes, getSources } from "../services/schemeRepository";
 
-const SECTIONS: { outcome: Outcome; label: string }[] = [
-  { outcome: "likely_fit", label: "Likely fit" },
-  { outcome: "needs_information", label: "Needs information" },
-  { outcome: "likely_mismatch", label: "Likely mismatch" },
-  { outcome: "source_review_needed", label: "Source under review" },
+const SECTIONS: { outcome: Outcome }[] = [
+  { outcome: "likely_fit" },
+  { outcome: "needs_information" },
+  { outcome: "likely_mismatch" },
+  { outcome: "source_review_needed" },
 ];
 
 export default function Results() {
@@ -51,7 +52,7 @@ export default function Results() {
         return (
           <section key={section.outcome} className="flex flex-col gap-3">
             <h2 className="text-xl font-semibold text-ink">
-              {section.label} ({items.length})
+              {OUTCOME_LABELS[section.outcome]} ({items.length})
             </h2>
             {items.length === 0 ? (
               <p className="text-sm">None.</p>
